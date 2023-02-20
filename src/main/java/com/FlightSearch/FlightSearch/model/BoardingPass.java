@@ -25,7 +25,7 @@ public class BoardingPass {
 //        @Embedded
 //        private FlightDto flightDto = new FlightDto(flightflight.getId());
         @JsonIgnore
-        @ManyToOne(fetch = FetchType.EAGER)
+        @ManyToOne(fetch = FetchType.EAGER )
         @JoinColumn(name = "flight_id")
         private Flight flight;
 

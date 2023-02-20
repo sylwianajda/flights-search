@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
 public interface BoardingPassRepository extends JpaRepository<BoardingPass,Long> {
     BoardingPass save(BoardingPass entity);
 
-    //BoardingPass deleteById(Integer id);
 }

@@ -40,7 +40,7 @@ public class Flight {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "airport_id")
     private Airport airport;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "flight")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "flight", orphanRemoval=true)
     private List<BoardingPass> boardingPasses;
 
     public Flight(long id, String flightNumber, String departureTo, String arrivalTo,
@@ -55,5 +55,9 @@ public class Flight {
         this.price = price;
         this.numberOfSeatsAvailable = numberOfSeatsAvailable;
         this.airport = airport;
+    }
+
+    public long getId() {
+        return id;
     }
 }

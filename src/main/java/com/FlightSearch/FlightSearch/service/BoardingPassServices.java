@@ -23,22 +23,34 @@ public class BoardingPassServices {
         this.flightRepository = flightRepository;
     }
 
-    public List<BoardingPass> generateBoardingPassesForAllPassengers(List<Passenger> passengers, Flight flight) {
+    public List<BoardingPass> generateBoardingPassesForAllPassengers(List<Passenger> passengers, Long id) {
+        Flight flight = flightRepository.findById(id).get();
         FlightState flightState = new FlightState(flightRepository, flight);
         List<BoardingPass> boardingPasses = new ArrayList<>();
+
         if (/*!flightState.availableSeatsIsFinished()*/flightState.getCurrentNumberOfSeatsAvailable() >= passengers.size()) {
-            for (Passenger passenger : passengers) {
+            passengers.forEach(passenger -> {
                 BoardingPass result = new BoardingPass(passenger.getFirstName(), passenger.getLastName(), flight);
                 boardingPassRepository.save(result);
                 flightState.nextOccupiedSeat();
                 boardingPasses.add(result);
-            }
+            });
 //               for(int x = 0; x <= passengers.size(); x++){
 //               flightState.nextOccupiedSeat();}
             return boardingPasses; //ResponseEntity.ok(result);
         } else {
             return null; //ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
         }
+    }
+    public void deleteBoardingPass(Long id) {
+        Long flightId = boardingPassRepository.findById(id).get().getFlight().getId();
+        boardingPassRepository.findById(id).ifPresent(boardingPass ->
+                boardingPassRepository.deleteById(id));
+//        Long flightId = boardingPassRepository.findById(id).ifPresent(boardingPass ->
+//                boardingPass.get().getFlight().getId());
+            Flight flight= flightRepository.findById(flightId).get();
+            FlightState flightState = new FlightState(flightRepository, flight);
+            flightState.nextAvailableSeat();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.FlightSearch.FlightSearch.controller;
 
+import com.FlightSearch.FlightSearch.model.BoardingPass;
 import com.FlightSearch.FlightSearch.model.Flight;
 import com.FlightSearch.FlightSearch.model.Passenger;
 import com.FlightSearch.FlightSearch.repository.BoardingPassRepository;
@@ -17,12 +18,14 @@ import java.util.List;
 public class BoardingPassController {
     private final BoardingPassServices boardingPassServices;
     private final FlightRepository flightRepository;
+    private final BoardingPassRepository boardingPassRepository;
 
 
-
-    public BoardingPassController(BoardingPassServices boardingPassServices, FlightRepository flightRepository) {
+    public BoardingPassController(BoardingPassServices boardingPassServices, FlightRepository flightRepository,
+                                  BoardingPassRepository boardingPassRepository) {
         this.boardingPassServices = boardingPassServices;
         this.flightRepository = flightRepository;
+        this.boardingPassRepository = boardingPassRepository;
     }
 
     @Transactional
@@ -31,9 +34,9 @@ public class BoardingPassController {
         if (!flightRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        Flight flight = flightRepository.findById(id).get();
-        if ((boardingPassServices.generateBoardingPassesForAllPassengers(passengers, flight)) != null) {
-            return ResponseEntity.ok(boardingPassServices.generateBoardingPassesForAllPassengers(passengers, flight));
+        List<BoardingPass> boardingPassList= boardingPassServices.generateBoardingPassesForAllPassengers(passengers, id);
+        if ((boardingPassList) != null) {
+            return ResponseEntity.ok(boardingPassList);
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
 
@@ -51,16 +54,14 @@ public class BoardingPassController {
 //            return ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
 //        }
 
-
-    @PostMapping("/deleteBooking/{id}")
-    String deleteBoardingPass(@PathVariable Long id) {
-//        boardingPassRepository.findById(id).ifPresent(boardingPass ->
-//                boardingPassRepository.deleteById(id));
-//        Long flightId = boardingPassRepository.findById(id).ifPresent(boardingPass ->
-//                boardingPass.getFlight().getId());
-  //      Flight flight= flightRepository.findById(flight).get();
-   //     FlightState flightState = new FlightState(flightRepository, flight);
-
+    @Transactional
+    @DeleteMapping("/deleteBooking/{id}")
+    ResponseEntity<?> deleteBoardingPass(@PathVariable Long id) {
+//        if (!boardingPassRepository.existsById(id)) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        boardingPassServices.deleteBoardingPass(id);
+//        return ResponseEntity.ok("BoardingPass has been deleted");
         return null;
     }
 }
