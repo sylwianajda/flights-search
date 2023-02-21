@@ -1,4 +1,4 @@
-package com.FlightSearch.FlightSearch.repository;
+package com.FlightSearch.FlightSearch.repository.sqlRepository;
 
 import com.FlightSearch.FlightSearch.model.BoardingPass;
 import com.FlightSearch.FlightSearch.model.Flight;

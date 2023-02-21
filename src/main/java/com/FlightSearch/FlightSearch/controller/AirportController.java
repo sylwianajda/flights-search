@@ -1,14 +1,12 @@
 package com.FlightSearch.FlightSearch.controller;
 
 import com.FlightSearch.FlightSearch.model.Airport;
-import com.FlightSearch.FlightSearch.repository.AirportRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportRepository;
 import com.FlightSearch.FlightSearch.service.AirportReader;
 import com.FlightSearch.FlightSearch.service.AirportServices;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.data.repository.util.ClassUtils.ifPresent;
 
 @RestController
 @RequestMapping("/airport")

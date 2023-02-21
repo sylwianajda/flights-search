@@ -2,8 +2,8 @@ package com.FlightSearch.FlightSearch.controller;
 
 import com.FlightSearch.FlightSearch.model.Flight;
 import com.FlightSearch.FlightSearch.model.Trip;
-import com.FlightSearch.FlightSearch.repository.AirportRepository;
-import com.FlightSearch.FlightSearch.repository.FlightRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightRepository;
 import com.FlightSearch.FlightSearch.service.AirportServices;
 import com.FlightSearch.FlightSearch.service.FlightServices;
 import org.springframework.http.ResponseEntity;

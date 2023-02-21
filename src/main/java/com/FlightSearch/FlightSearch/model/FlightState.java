@@ -1,6 +1,6 @@
 package com.FlightSearch.FlightSearch.model;
 
-import com.FlightSearch.FlightSearch.repository.FlightRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightRepository;
 
 public class FlightState {
     private final FlightRepository flightRepository;

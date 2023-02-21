@@ -1,10 +1,9 @@
 package com.FlightSearch.FlightSearch.controller;
 
 import com.FlightSearch.FlightSearch.model.BoardingPass;
-import com.FlightSearch.FlightSearch.model.Flight;
 import com.FlightSearch.FlightSearch.model.Passenger;
-import com.FlightSearch.FlightSearch.repository.BoardingPassRepository;
-import com.FlightSearch.FlightSearch.repository.FlightRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.BoardingPassRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightRepository;
 import com.FlightSearch.FlightSearch.service.BoardingPassServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
