@@ -1,13 +1,7 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.Flight;
-import com.FlightSearch.FlightSearch.repository.FlightRepository;
+import com.FlightSearch.FlightSearch.data.repository.sqlRepository.FlightRepository;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjuster;
-import java.util.stream.Collectors;
 
 @Service
 public class FlightServices {

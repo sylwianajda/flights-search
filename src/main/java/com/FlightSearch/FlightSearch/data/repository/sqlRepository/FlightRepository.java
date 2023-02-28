@@ -1,6 +1,7 @@
-package com.FlightSearch.FlightSearch.repository;
+package com.FlightSearch.FlightSearch.data.repository.sqlRepository;
 
-import com.FlightSearch.FlightSearch.model.Flight;
+import com.FlightSearch.FlightSearch.data.entities.BoardingPassData;
+import com.FlightSearch.FlightSearch.data.entities.FlightData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,25 +12,27 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface FlightRepository extends JpaRepository<Flight,Long> {
-    List<Flight> findAll();
+public interface FlightRepository extends JpaRepository<FlightData,Long> {
+    List<FlightData> findAll();
 
-    Optional<Flight> findByDepartureTo(String departureTo);
+    boolean existsById(Long id);
 
-    Optional<Flight> findById(Long id);
+    Optional<FlightData> findByDepartureTo(String departureTo);
 
-    Flight save(Flight entity);
+    Optional<FlightData> findById(Long id);
 
-    List<Flight> findAllByAirportId(Integer airportId);
+    FlightData save(FlightData entity);
+
+    //List<FlightData> findAllByAirportId(Integer id);
 
     @Query(value = """
-            from Flight f
+            from FlightData f
             where f.departureTo = :departureTo and
             f.arrivalTo = :arrivalTo and
             f.numberOfSeatsAvailable >= :numberOfPassengers and
              date(f.departureDate) = (
                 select date(f2.departureDate)
-                from Flight f2
+                from FlightData f2
                 where f2.departureTo = :departureTo
                 and f2.arrivalTo = :arrivalTo
                 and f2.departureDate > :departureDate
@@ -38,16 +41,16 @@ public interface FlightRepository extends JpaRepository<Flight,Long> {
                 limit 1
             )
             """)
-    List<Flight> findMatch(@Param("departureTo") String departureTo, @Param("arrivalTo") String arrivalTo, @Param("departureDate") LocalDateTime departureDate, @Param("numberOfPassengers") int numberOfPassengers);
+    List<FlightData> findMatch(@Param("departureTo") String departureTo, @Param("arrivalTo") String arrivalTo, @Param("departureDate") LocalDateTime departureDate, @Param("numberOfPassengers") int numberOfPassengers);
 
     @Query(value = """
-            from Flight f
+            from FlightData f
             where f.departureTo = :returnDepartureTo
             and f.arrivalTo = :returnArrivalTo
             and f.numberOfSeatsAvailable >= :numberOfPassengers 
             and date(f.departureDate) = (
                 select date(f2.departureDate)
-                from Flight f2
+                from FlightData f2
                 where f2.departureTo = :returnDepartureTo
                 and f2.arrivalTo = :returnArrivalTo
                 and f2.departureDate > :returnDepartureDate
@@ -56,7 +59,7 @@ public interface FlightRepository extends JpaRepository<Flight,Long> {
                 limit 1
             )
             """)
-    List<Flight> findReturnMatch(@Param("returnDepartureTo") String returnDepartureTo, @Param("returnArrivalTo") String returnArrivalTo, @Param("returnDepartureDate") LocalDateTime returnDepartureDate, int numberOfPassengers);
+    List<FlightData> findReturnMatch(@Param("returnDepartureTo") String returnDepartureTo, @Param("returnArrivalTo") String returnArrivalTo, @Param("returnDepartureDate") LocalDateTime returnDepartureDate, int numberOfPassengers);
 
     //    @Query(value = "from Flight f where f.departureTo=:departureTo and f.arrivalTo=:arrivalTo and f.departureDate>=:departureDate order by f.departureDate ASC ")
 //    List<Flight> findMatchInOneDay(@Param("departureTo") String departureTo, @Param("arrivalTo") String arrivalTo, @Param("departureDate") LocalDateTime departureDate);

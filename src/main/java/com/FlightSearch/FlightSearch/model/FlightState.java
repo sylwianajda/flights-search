@@ -1,18 +1,19 @@
 package com.FlightSearch.FlightSearch.model;
 
-import com.FlightSearch.FlightSearch.repository.FlightRepository;
+import com.FlightSearch.FlightSearch.data.entities.FlightData;
+import com.FlightSearch.FlightSearch.data.repository.sqlRepository.FlightRepository;
 
 public class FlightState {
     private final FlightRepository flightRepository;
-    private Flight flight;
+    private FlightData flightData;
     private int currentNumberOfSeatsAvailable;
 
-    public Flight getFlight() {
-        return flight;
+    public FlightData getFlight() {
+        return flightData;
     }
 
-    public void setFlight(Flight flight) {
-        this.flight = flight;
+    public void setFlight(FlightData flightData) {
+        this.flightData = flightData;
     }
 
     public int getCurrentNumberOfSeatsAvailable() {
@@ -23,10 +24,10 @@ public class FlightState {
         this.currentNumberOfSeatsAvailable = currentNumberOfSeatsAvailable;
     }
 
-    public FlightState(FlightRepository flightRepository, Flight flight) {
+    public FlightState(FlightRepository flightRepository, FlightData flightData) {
         this.flightRepository = flightRepository;
-        this.flight = flight;
-        this.currentNumberOfSeatsAvailable = flight.getNumberOfSeatsAvailable();
+        this.flightData = flightData;
+        this.currentNumberOfSeatsAvailable = flightData.getNumberOfSeatsAvailable();
     }
     public void nextOccupiedSeat() {
         currentNumberOfSeatsAvailable--;

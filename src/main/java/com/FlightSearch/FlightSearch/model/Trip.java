@@ -20,8 +20,8 @@ public class Trip {
     @NotBlank
     private int numberOfPassengers;
 
-    public Trip() {
-    }
+//    public Trip() {
+//    }
 
     public Trip(String departureTo, String arrivalTo, LocalDateTime departureDate, boolean returnTrip, int numberOfPassengers) {
         this.departureTo = departureTo;

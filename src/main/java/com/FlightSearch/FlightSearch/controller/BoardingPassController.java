@@ -1,10 +1,9 @@
 package com.FlightSearch.FlightSearch.controller;
 
-import com.FlightSearch.FlightSearch.model.BoardingPass;
-import com.FlightSearch.FlightSearch.model.Flight;
+import com.FlightSearch.FlightSearch.data.entities.BoardingPassData;
 import com.FlightSearch.FlightSearch.model.Passenger;
-import com.FlightSearch.FlightSearch.repository.BoardingPassRepository;
-import com.FlightSearch.FlightSearch.repository.FlightRepository;
+import com.FlightSearch.FlightSearch.data.repository.sqlRepository.BoardingPassRepository;
+import com.FlightSearch.FlightSearch.data.repository.sqlRepository.FlightRepository;
 import com.FlightSearch.FlightSearch.service.BoardingPassServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +28,14 @@ public class BoardingPassController {
     }
 
     @Transactional
-    @PostMapping("/booking/flight/{id}")/*/{numberOfPassengers}*/
-    ResponseEntity<?> postBookingBoardingPass(@PathVariable Long id, @RequestBody List<Passenger> passengers) {
-        if (!flightRepository.existsById(id)) {
+    @PostMapping("/booking/flight/{flightId}")/*/{numberOfPassengers}*/
+    ResponseEntity<?> postBookingBoardingPass(@PathVariable Long flightId, @RequestBody List<Passenger> passengers) {
+        if (!flightRepository.existsById(flightId)) {
             return ResponseEntity.notFound().build();
         }
-        List<BoardingPass> boardingPassList= boardingPassServices.generateBoardingPassesForAllPassengers(passengers, id);
-        if ((boardingPassList) != null) {
-            return ResponseEntity.ok(boardingPassList);
+        List<BoardingPassData> boardingPassDataList = boardingPassServices.generateBoardingPassesForAllPassengers(passengers, flightId);
+        if ((boardingPassDataList) != null) {
+            return ResponseEntity.ok(boardingPassDataList);
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
 

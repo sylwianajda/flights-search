@@ -1,13 +1,11 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.BoardingPass;
-import com.FlightSearch.FlightSearch.model.Flight;
+import com.FlightSearch.FlightSearch.data.entities.BoardingPassData;
+import com.FlightSearch.FlightSearch.data.entities.FlightData;
 import com.FlightSearch.FlightSearch.model.FlightState;
 import com.FlightSearch.FlightSearch.model.Passenger;
-import com.FlightSearch.FlightSearch.repository.BoardingPassRepository;
-import com.FlightSearch.FlightSearch.repository.FlightRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.FlightSearch.FlightSearch.data.repository.sqlRepository.BoardingPassRepository;
+import com.FlightSearch.FlightSearch.data.repository.sqlRepository.FlightRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,33 +21,33 @@ public class BoardingPassServices {
         this.flightRepository = flightRepository;
     }
 
-    public List<BoardingPass> generateBoardingPassesForAllPassengers(List<Passenger> passengers, Long id) {
-        Flight flight = flightRepository.findById(id).get();
-        FlightState flightState = new FlightState(flightRepository, flight);
-        List<BoardingPass> boardingPasses = new ArrayList<>();
+    public List<BoardingPassData> generateBoardingPassesForAllPassengers(List<Passenger> passengers, Long id) {
+        FlightData flightData = flightRepository.findById(id).get();
+        FlightState flightState = new FlightState(flightRepository, flightData);
+        List<BoardingPassData> boardingPassData = new ArrayList<>();
 
         if (/*!flightState.availableSeatsIsFinished()*/flightState.getCurrentNumberOfSeatsAvailable() >= passengers.size()) {
             passengers.forEach(passenger -> {
-                BoardingPass result = new BoardingPass(passenger.getFirstName(), passenger.getLastName(), flight);
+                BoardingPassData result = new BoardingPassData(passenger.getFirstName(), passenger.getLastName(), flightData);
                 boardingPassRepository.save(result);
                 flightState.nextOccupiedSeat();
-                boardingPasses.add(result);
+                boardingPassData.add(result);
             });
 //               for(int x = 0; x <= passengers.size(); x++){
 //               flightState.nextOccupiedSeat();}
-            return boardingPasses; //ResponseEntity.ok(result);
+            return boardingPassData; //ResponseEntity.ok(result);
         } else {
             return null; //ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
         }
     }
     public void deleteBoardingPass(Long id) {
-        Long flightId = boardingPassRepository.findById(id).get().getFlight().getId();
+        Long flightId = boardingPassRepository.findById(id).get().getFlightData().getId();
         boardingPassRepository.findById(id).ifPresent(boardingPass ->
                 boardingPassRepository.deleteById(id));
 //        Long flightId = boardingPassRepository.findById(id).ifPresent(boardingPass ->
 //                boardingPass.get().getFlight().getId());
-            Flight flight= flightRepository.findById(flightId).get();
-            FlightState flightState = new FlightState(flightRepository, flight);
+            FlightData flightData = flightRepository.findById(flightId).get();
+            FlightState flightState = new FlightState(flightRepository, flightData);
             flightState.nextAvailableSeat();
     }
 

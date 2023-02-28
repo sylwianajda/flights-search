@@ -1,7 +1,7 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.Airport;
-import com.FlightSearch.FlightSearch.repository.AirportRepository;
+import com.FlightSearch.FlightSearch.data.entities.AirportData;
+import com.FlightSearch.FlightSearch.data.repository.sqlRepository.AirportRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -11,9 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class AirportReader {
@@ -23,8 +21,8 @@ public class AirportReader {
         this.airportRepository = airportRepository;
     }
 
-    public static List<Airport> readAirportFromFile(String filePath) {
-        List<Airport> airports = new ArrayList<>();
+    public static List<AirportData> readAirportFromFile(String filePath) {
+        List<AirportData> airportsData = new ArrayList<>();
         Path pathToFile = Paths.get(filePath);
 
         try (BufferedReader br = Files.newBufferedReader(pathToFile,
@@ -36,9 +34,9 @@ public class AirportReader {
 
                 String[] attributes = line.split(":");
 
-                Airport airport = createAirport(attributes);
+                AirportData airportData = createAirport(attributes);
 
-                airports.add(airport);
+                airportsData.add(airportData);
 
                 line = br.readLine();
 
@@ -48,10 +46,10 @@ public class AirportReader {
             ioe.printStackTrace();
         }
 
-        return airports;
+        return airportsData;
     }
 
-    private static Airport createAirport(String[] metadata) {
+    private static AirportData createAirport(String[] metadata) {
          String name = metadata[2];
          String location = metadata[3];
          String iataCode = metadata[1];
@@ -59,11 +57,11 @@ public class AirportReader {
          Double latitude = Double.parseDouble(metadata[14]);
          Double longitude = Double.parseDouble(metadata[15]);
 
-        return new Airport(name,location,iataCode,country,latitude,longitude);
+        return new AirportData(name,location,iataCode,country,latitude,longitude);
     }
     public void saveAirportsDataFromList() {
-        List<Airport> airports = readAirportFromFile("C:\\Users\\Sylwia\\Downloads\\GlobalAirportDatabase\\GlobalAirportDatabase.txt");
-        for (Airport a : airports) {
+        List<AirportData> airportData = readAirportFromFile("C:\\Users\\Sylwia\\Downloads\\GlobalAirportDatabase\\GlobalAirportDatabase.txt");
+        for (AirportData a : airportData) {
             airportRepository.save(a);
         }
     }
