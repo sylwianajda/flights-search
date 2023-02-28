@@ -1,5 +1,7 @@
 package com.FlightSearch.FlightSearch.data.entities;
 
+import com.FlightSearch.FlightSearch.model.Airport;
+import com.FlightSearch.FlightSearch.model.Flight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -59,4 +62,17 @@ public class FlightData {
     public long getId() {
         return id;
     }
+
+    /*public static FlightData from(Flight flight) {
+        return new FlightData(
+                flight.getFlightNumber(),
+                flight.getDepartureTo(),
+                flight.getArrivalTo(),
+                flight.getDepartureDate(),
+                flight.getArrivalDate(),
+                flight.getPrice(),
+                flight.getNumberOfSeatsAvailable(),
+                flight.getAirport()
+        );
+    }*/
 }

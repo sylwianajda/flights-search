@@ -5,11 +5,7 @@ import com.FlightSearch.FlightSearch.data.repository.sqlRepository.AirportReposi
 import com.FlightSearch.FlightSearch.model.Airport;
 import com.FlightSearch.FlightSearch.model.AirportRequest;
 import com.FlightSearch.FlightSearch.model.AirportResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.validation.Valid;
 
 @Service
 public class AirportServices {
@@ -20,21 +16,21 @@ public class AirportServices {
         this.airportRepository = airportRepository;
 
     }
-    public AirportResponse finderAirportByDepartureFrom(String location) {
+    public AirportResponse findAirportByDepartureFrom(String location) {
         AirportData airportData = airportRepository.findByLocation(location);
         AirportResponse result = AirportResponse.from(Airport.from(airportData));
         return result;
     }
-    public boolean finderExistingAirportByIataCode (String iataCode) {
+    public boolean findExistingAirportByIataCode(String iataCode) {
         boolean airportExist = airportRepository.existsByIataCode(iataCode);
         return airportExist;
     }
-    public AirportResponse finderAirportById(Integer airportId) {
+    public AirportResponse findAirportById(Integer airportId) {
         AirportData airportData = airportRepository.findById(airportId).get();
         AirportResponse result = AirportResponse.from(Airport.from(airportData));
         return result;
     }
-    public AirportResponse updaterAirport(int id, AirportRequest source) {
+    public AirportResponse updateAirport(int id, AirportRequest source) {
             AirportData airportData = AirportData.from(Airport.from(source));
             airportRepository.findById(id).ifPresent(airport-> {
                 airport.updateAirport(airportData);

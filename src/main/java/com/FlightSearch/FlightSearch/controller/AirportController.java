@@ -1,12 +1,10 @@
 package com.FlightSearch.FlightSearch.controller;
 
-import com.FlightSearch.FlightSearch.data.entities.AirportData;
 import com.FlightSearch.FlightSearch.data.repository.sqlRepository.AirportRepository;
 import com.FlightSearch.FlightSearch.model.AirportRequest;
 import com.FlightSearch.FlightSearch.model.AirportResponse;
 import com.FlightSearch.FlightSearch.service.AirportReader;
 import com.FlightSearch.FlightSearch.service.AirportServices;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +26,11 @@ public class AirportController {
 
     @GetMapping("searchByIataCode")
     public boolean checkAirportExistsFromIataCode(@RequestParam(required = true)@NotEmpty String iataCode) {
-        return airportServices.finderExistingAirportByIataCode(iataCode);
+        return airportServices.findExistingAirportByIataCode(iataCode);
     }
     @GetMapping("searchByLocation")
     public AirportResponse searchAirportByLocation(@RequestParam(required = true) String location) {
-        return airportServices.finderAirportByDepartureFrom(location);
+        return airportServices.findAirportByDepartureFrom(location);
     }
 
     @GetMapping("searchById/{id}")
@@ -40,7 +38,7 @@ public class AirportController {
 //        if (!airportRepository.existsById(airportId)) {
 //            return ResponseEntity.notFound().build();
 //        }
-        return ResponseEntity.ok(airportServices.finderAirportById(id));
+        return ResponseEntity.ok(airportServices.findAirportById(id));
     }
 
     @GetMapping("/addAirports")
@@ -57,7 +55,7 @@ public class AirportController {
 //            airportServices.updaterAirport(id, source);
 //        }
 //            return ResponseEntity.noContent().build();
-        if (airportServices.updaterAirport(id, source) != null){
+        if (airportServices.updateAirport(id, source) != null){
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
