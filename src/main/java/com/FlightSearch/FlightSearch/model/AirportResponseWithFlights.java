@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AirportResponse {
+public class AirportResponseWithFlights {
     private int id;
     private String name;
     private String location;
@@ -19,9 +19,9 @@ public class AirportResponse {
     private String country;
     private Double latitude;
     private Double longitude;
+    private List<Flight> flights;
 
-
-    public AirportResponse(Airport airport) {
+    public AirportResponseWithFlights(Airport airport) {
         this.id = airport.getId();
         this.name = airport.getName();
         this.location = airport.getLocation();
@@ -29,18 +29,8 @@ public class AirportResponse {
         this.country = airport.getCountry();
         this.latitude = airport.getLatitude();
         this.longitude = airport.getLongitude();
+        this.flights =airport.getFlights();
 
     }
-
-//    public static AirportResponse from(Airport airport) {
-//        return new AirportResponse(
-//                airport.getId(),
-//                airport.getName(),
-//                airport.getLocation(),
-//                airport.getIataCode(),
-//                airport.getCountry(),
-//                airport.getLatitude(),
-//                airport.getLatitude()
-//        );
-//    }
 }
+

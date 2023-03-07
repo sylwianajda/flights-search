@@ -1,4 +1,4 @@
-package com.FlightSearch.FlightSearch.controller;
+package com.FlightSearch.FlightSearch.controller.exceptions;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

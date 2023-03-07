@@ -1,4 +1,4 @@
-package com.FlightSearch.FlightSearch.data.entities;
+package com.FlightSearch.FlightSearch.repository.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -31,6 +31,9 @@ public class BoardingPassData {
                 this.firstName = firstName;
                 this.lastName = lastName;
                 this.flightData = flightData;
+        }
+
+        public BoardingPassData(BoardingPass boardingPass) {
         }
 
         public FlightData getFlightData() {

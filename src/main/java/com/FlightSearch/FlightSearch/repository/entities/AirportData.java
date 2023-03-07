@@ -1,6 +1,6 @@
-package com.FlightSearch.FlightSearch.data.entities;
+package com.FlightSearch.FlightSearch.repository.entities;
 
-import com.FlightSearch.FlightSearch.model.Airport;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @AllArgsConstructor
@@ -28,8 +28,9 @@ public class AirportData {
     private String country;
     private Double latitude;
     private Double longitude;
+    //@JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "airportData")
-    private List<FlightData> flightData;
+    private List<FlightData> flightsData;
 
     public AirportData(String name, String location, String iataCode, String country, Double latitude, Double longitude) {
         this.name = name;
@@ -48,17 +49,23 @@ public class AirportData {
         longitude= source.longitude;
 
     }
-    public static AirportData from(Airport airport) {
-        return new AirportData(
-                airport.getId(),
-                airport.getName(),
-                airport.getLocation(),
-                airport.getIataCode(),
-                airport.getCountry(),
-                airport.getLatitude(),
-                airport.getLongitude(),
-                new ArrayList<FlightData>()
-        );
+    public AirportData(Airport airport) {
+        this.id = airport.getId();
+        this.name = airport.getName();
+        this.location = airport.getLocation();
+        this.iataCode = airport.getIataCode();
+        this.country = airport.getCountry();
+        this.latitude = airport.getLatitude();
+        this.longitude = airport.getLongitude();
+        this.flightsData = airport.getFlights().stream()
+                .map(flight-> new FlightData(flight))
+                .collect(Collectors.toList());
     }
+//    private static List<FlightData> convertFlightsToFlightData(List<Flight> flights) {
+//        List<FlightData> flightsData = flights.stream()
+//                .map(flight-> new FlightData(flight))
+//                .collect(Collectors.toList());
+//        return flightsData;
+//    }
 
 }

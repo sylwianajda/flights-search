@@ -1,16 +1,15 @@
 package com.FlightSearch.FlightSearch.controller;
 
-import com.FlightSearch.FlightSearch.data.entities.FlightData;
+import com.FlightSearch.FlightSearch.model.FlightResponse;
+import com.FlightSearch.FlightSearch.repository.entities.FlightData;
+import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.model.Trip;
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.AirportRepository;
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.FlightRepository;
-import com.FlightSearch.FlightSearch.service.AirportServices;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
 import com.FlightSearch.FlightSearch.service.FlightServices;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,24 +17,24 @@ import java.util.List;
 @RequestMapping("/flight")
 public class FlightController {
     private final FlightServices flightServices;
-    private final AirportServices airportServices;
-    private final FlightRepository flightRepository;
-    private final AirportRepository airportRepository;
+    private final FlightDataRepository flightDataRepository;
 
-    public FlightController(FlightServices flightServices, AirportServices airportServices,
-                            FlightRepository flightRepository,
-                            AirportRepository airportRepository) {
+
+    public FlightController(FlightServices flightServices,
+                            FlightDataRepository flightDataRepository) {
         this.flightServices = flightServices;
-        this.airportServices = airportServices;
-        this.flightRepository = flightRepository;
-        this.airportRepository = airportRepository;
+
+        this.flightDataRepository = flightDataRepository;
+
     }
+
     @PostMapping("/add")
-    ResponseEntity<FlightData> postFlight(@RequestBody @Valid FlightData flightData) {
-        FlightData result;
-        flightData.setAirportData(airportRepository.findByLocation(flightData.getDepartureTo()));
-        result = flightRepository.save(flightData);
-        return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
+    ResponseEntity<FlightResponse> postFlight(@RequestBody @Valid CreateFlightRequest flightRequest) {
+        Long flightId = flightServices.addFlight(flightRequest);
+        FlightResponse result = flightServices.makeFlightResponseFromFlight(flightId);
+        //flightData.setAirportData(airportDataRepository.findByLocation(flightData.getDepartureTo()));
+        return ResponseEntity.ok(result);
+        //ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
     @GetMapping("/match")
@@ -47,8 +46,8 @@ public class FlightController {
         if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
             return ResponseEntity.unprocessableEntity().build();
         }
-        List<FlightData> flightsData = flightRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
-        List<FlightData> returnFlightsData = flightRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(),trip.getNumberOfPassengers());
+        List<FlightData> flightsData = flightDataRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
+        List<FlightData> returnFlightsData = flightDataRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(),trip.getNumberOfPassengers());
         matchingFlights.add(flightsData);
         if (returnFlightsData.size() != 0) {
             matchingFlights.add(returnFlightsData);

@@ -1,48 +1,68 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.data.entities.AirportData;
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.AirportRepository;
-import com.FlightSearch.FlightSearch.model.Airport;
+import com.FlightSearch.FlightSearch.repository.entities.Airport;
 import com.FlightSearch.FlightSearch.model.AirportRequest;
 import com.FlightSearch.FlightSearch.model.AirportResponse;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AirportServices {
-    private final AirportRepository airportRepository;
+    private SqlRepository sqlRepository;
 
 
-    public AirportServices(AirportRepository airportRepository) {
-        this.airportRepository = airportRepository;
-
+    public AirportServices(SqlRepository sqlRepository) {
+        this.sqlRepository = sqlRepository;
     }
-    public AirportResponse findAirportByDepartureFrom(String location) {
-        AirportData airportData = airportRepository.findByLocation(location);
-        AirportResponse result = AirportResponse.from(Airport.from(airportData));
+    public List<AirportResponse> findAirportByDepartureFrom(String location) {
+        List<Airport> airports= sqlRepository.findByLocation(location);
+        //AirportData airportData = airportDataRepository.findByLocation(location);
+        //AirportResponse result = AirportResponse.from(Airport.from(airportData));
+        List<AirportResponse> result = airports.stream()
+                .map(airport -> new AirportResponse(airport))
+                .collect(Collectors.toList());
         return result;
     }
     public boolean findExistingAirportByIataCode(String iataCode) {
-        boolean airportExist = airportRepository.existsByIataCode(iataCode);
+        boolean airportExist = sqlRepository.existsByIataCode(iataCode);
         return airportExist;
     }
     public AirportResponse findAirportById(Integer airportId) {
-        AirportData airportData = airportRepository.findById(airportId).get();
-        AirportResponse result = AirportResponse.from(Airport.from(airportData));
+        Airport airport = sqlRepository.findById(airportId).get();
+        AirportResponse result = new AirportResponse(airport);
         return result;
     }
-    public AirportResponse updateAirport(int id, AirportRequest source) {
-            AirportData airportData = AirportData.from(Airport.from(source));
-            airportRepository.findById(id).ifPresent(airport-> {
-                airport.updateAirport(airportData);
-                airportRepository.save(airport);
-            });
-            AirportResponse updatedAirport = AirportResponse.from(Airport.from(airportRepository.findById(id).get()));
+    public AirportResponse executeAirportUpdate(int id, AirportRequest airportRequest) {
+            Airport source = new Airport(airportRequest);
+         sqlRepository.findById(id).ifPresent(airport -> {
+             airport.updateAirport(source);
+//             source.setFlights(airport.getFlights());
+//            airport.updateAirport(createAirportUpdate(source));
+//            airport.setFlights(sqlRepository.findById(id).get().getFlights());
+            sqlRepository.saveAirport(airport);
+        });
+            AirportResponse updatedAirport = new AirportResponse(sqlRepository.findById(id).get());
             return updatedAirport;
 //            if (airportRepository.findById(id).get().toString().equals(airportData.toString())){
 //                return updatedAirport;
 //            } else {
 //                return null;
 //            }
+    }
+    public Airport createAirportUpdate(Airport source) {
+        return new Airport(
+                source.getId(),
+                source.getLocation(),
+                source.getLocation(),
+                source.getIataCode(),
+                source.getCountry(),
+                source.getLatitude(),
+                source.getLongitude(),
+                source.getFlights());
+
     }
 
 

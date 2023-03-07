@@ -1,7 +1,5 @@
-package com.FlightSearch.FlightSearch.data.entities;
+package com.FlightSearch.FlightSearch.repository.entities;
 
-import com.FlightSearch.FlightSearch.model.Airport;
-import com.FlightSearch.FlightSearch.model.Flight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,8 +9,8 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -38,7 +36,7 @@ public class FlightData {
     private BigDecimal price;
     @NotBlank
     private int numberOfSeatsAvailable;
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "airport_id")
     private AirportData airportData;
@@ -57,6 +55,21 @@ public class FlightData {
         this.price = price;
         this.numberOfSeatsAvailable = numberOfSeatsAvailable;
         this.airportData = airportData;
+    }
+
+    public FlightData(Flight flight) {
+        this.id = flight.getId();
+        this.flightNumber = flight.getFlightNumber();
+        this.departureTo = flight.getDepartureTo();
+        this.arrivalTo = flight.getArrivalTo();
+        this.departureDate = flight.getDepartureDate();
+        this.arrivalDate = flight.getArrivalDate();
+        this.price = flight.getPrice();
+        this.numberOfSeatsAvailable = flight.getNumberOfSeatsAvailable();
+        this.airportData = new AirportData(flight.getAirport());
+        this.boardingPassData = flight.getBoardingPass().stream()
+                .map(boardingPass-> new BoardingPassData(boardingPass))
+                .collect(Collectors.toList());
     }
 
     public long getId() {

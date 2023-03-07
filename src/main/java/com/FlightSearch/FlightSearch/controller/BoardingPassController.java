@@ -1,9 +1,9 @@
 package com.FlightSearch.FlightSearch.controller;
 
-import com.FlightSearch.FlightSearch.data.entities.BoardingPassData;
+import com.FlightSearch.FlightSearch.repository.entities.BoardingPassData;
 import com.FlightSearch.FlightSearch.model.Passenger;
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.BoardingPassRepository;
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.FlightRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.BoardingPassDataRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
 import com.FlightSearch.FlightSearch.service.BoardingPassServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,21 +16,21 @@ import java.util.List;
 @RequestMapping("/boardingPass")
 public class BoardingPassController {
     private final BoardingPassServices boardingPassServices;
-    private final FlightRepository flightRepository;
-    private final BoardingPassRepository boardingPassRepository;
+    private final FlightDataRepository flightDataRepository;
+    private final BoardingPassDataRepository boardingPassDataRepository;
 
 
-    public BoardingPassController(BoardingPassServices boardingPassServices, FlightRepository flightRepository,
-                                  BoardingPassRepository boardingPassRepository) {
+    public BoardingPassController(BoardingPassServices boardingPassServices, FlightDataRepository flightDataRepository,
+                                  BoardingPassDataRepository boardingPassDataRepository) {
         this.boardingPassServices = boardingPassServices;
-        this.flightRepository = flightRepository;
-        this.boardingPassRepository = boardingPassRepository;
+        this.flightDataRepository = flightDataRepository;
+        this.boardingPassDataRepository = boardingPassDataRepository;
     }
 
     @Transactional
     @PostMapping("/booking/flight/{flightId}")/*/{numberOfPassengers}*/
     ResponseEntity<?> postBookingBoardingPass(@PathVariable Long flightId, @RequestBody List<Passenger> passengers) {
-        if (!flightRepository.existsById(flightId)) {
+        if (!flightDataRepository.existsById(flightId)) {
             return ResponseEntity.notFound().build();
         }
         List<BoardingPassData> boardingPassDataList = boardingPassServices.generateBoardingPassesForAllPassengers(passengers, flightId);

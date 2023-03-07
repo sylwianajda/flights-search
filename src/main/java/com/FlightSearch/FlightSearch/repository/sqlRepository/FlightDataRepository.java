@@ -1,18 +1,16 @@
-package com.FlightSearch.FlightSearch.data.repository.sqlRepository;
+package com.FlightSearch.FlightSearch.repository.sqlRepository;
 
-import com.FlightSearch.FlightSearch.data.entities.BoardingPassData;
-import com.FlightSearch.FlightSearch.data.entities.FlightData;
+import com.FlightSearch.FlightSearch.repository.entities.FlightData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface FlightRepository extends JpaRepository<FlightData,Long> {
+
+public interface FlightDataRepository extends JpaRepository<FlightData,Long> {
     List<FlightData> findAll();
 
     boolean existsById(Long id);

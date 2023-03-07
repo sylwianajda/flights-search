@@ -1,7 +1,7 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.data.entities.AirportData;
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.AirportRepository;
+import com.FlightSearch.FlightSearch.repository.entities.AirportData;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -15,10 +15,10 @@ import java.util.List;
 
 @Service
 public class AirportReader {
-    private AirportRepository airportRepository;
+    private AirportDataRepository airportDataRepository;
 
-    public AirportReader(AirportRepository airportRepository) {
-        this.airportRepository = airportRepository;
+    public AirportReader(AirportDataRepository airportDataRepository) {
+        this.airportDataRepository = airportDataRepository;
     }
 
     public static List<AirportData> readAirportFromFile(String filePath) {
@@ -62,7 +62,7 @@ public class AirportReader {
     public void saveAirportsDataFromList() {
         List<AirportData> airportData = readAirportFromFile("C:\\Users\\Sylwia\\Downloads\\GlobalAirportDatabase\\GlobalAirportDatabase.txt");
         for (AirportData a : airportData) {
-            airportRepository.save(a);
+            airportDataRepository.save(a);
         }
     }
 }

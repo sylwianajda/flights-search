@@ -1,34 +1,48 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.data.entities.FlightData;
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.AirportRepository;
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.FlightRepository;
-import com.FlightSearch.FlightSearch.model.Airport;
-import com.FlightSearch.FlightSearch.model.Flight;
-import com.FlightSearch.FlightSearch.model.FlightRequest;
-import org.springframework.http.ResponseEntity;
+import com.FlightSearch.FlightSearch.model.FlightResponse;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataRepository;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
+import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
-
-import java.net.URI;
 
 @Service
 public class FlightServices {
-    private final FlightRepository flightRepository;
-    private final AirportRepository airportRepository;
+    private final FlightDataRepository flightDataRepository;
+    private final AirportDataRepository airportDataRepository;
 
-    public FlightServices(FlightRepository flightRepository, AirportRepository airportRepository) {
-        this.flightRepository = flightRepository;
-        this.airportRepository = airportRepository;
+    private SqlRepository sqlRepository;
+
+    public FlightServices(FlightDataRepository flightDataRepository, AirportDataRepository airportDataRepository, SqlRepository sqlRepository) {
+        this.flightDataRepository = flightDataRepository;
+        this.airportDataRepository = airportDataRepository;
+        this.sqlRepository = sqlRepository;
     }
 
-    public void addFlight(FlightRequest flightRequest){
-        /*FlightData result;
-        Flight flight = Flight.from(flightRequest);
-        flight.setAirport(Airport.from(airportRepository.findByLocation(flight.getDepartureTo())));
-        result = flightRepository.save(FlightData.from(flight));
-        return ResponseEntity.created(URI.create("/" + result.getId())).body(result);*/
-
+    public Long addFlight(CreateFlightRequest flightRequest){
+        Flight flight = makeFlightFromCreateFlightRequest(flightRequest);
+        sqlRepository.saveFlight(flight);
+        Long flightId = flight.getId();
+        //flight.setAirport(Airport.from(airportDataRepository.findByLocation(flight.getDepartureTo())));
+        //return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
+        //FlightResponse flightResponse = new FlightResponse(sqlRepository.findById(flightId).get());
+        return flightId;
     }
+    public FlightResponse makeFlightResponseFromFlight(Long flightId){
+        Flight flight = sqlRepository.findById(flightId).get();
+        FlightResponse flightResponse = new FlightResponse(flight);
+        return flightResponse;
+    }
+
+    public Flight makeFlightFromCreateFlightRequest(CreateFlightRequest flightRequest){
+        Flight flight = new Flight(flightRequest);
+        sqlRepository.findById(flightRequest.getAirportId()).ifPresent(airport ->flight.setAirport(airport));
+        //sqlRepository.findById(flightRequest.getAirportId()).ifPresent(flight.setAirport(flightRequest.getAirportId().get()));
+        return flight;
+    }
+
 
 //    public FlightDto createFlightDto(Flight flight){
 //        var result = new FlightDto();

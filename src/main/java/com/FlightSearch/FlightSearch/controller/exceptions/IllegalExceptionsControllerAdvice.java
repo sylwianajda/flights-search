@@ -1,5 +1,6 @@
-package com.FlightSearch.FlightSearch.controller;
+package com.FlightSearch.FlightSearch.controller.exceptions;
 
+import com.FlightSearch.FlightSearch.controller.exceptions.IllegalExceptionProcessing;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

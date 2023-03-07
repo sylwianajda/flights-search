@@ -1,11 +1,13 @@
 package com.FlightSearch.FlightSearch.model;
 
+import com.FlightSearch.FlightSearch.repository.entities.Flight;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -24,6 +26,8 @@ public class AirportRequest {
     private Double latitude;
     @NotBlank
     private Double longitude;
+
+
 
 
 }

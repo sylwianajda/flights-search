@@ -1,6 +1,7 @@
 package com.FlightSearch.FlightSearch.controller;
 
-import com.FlightSearch.FlightSearch.data.repository.sqlRepository.AirportRepository;
+import com.FlightSearch.FlightSearch.controller.exceptions.IllegalExceptionProcessing;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataRepository;
 import com.FlightSearch.FlightSearch.model.AirportRequest;
 import com.FlightSearch.FlightSearch.model.AirportResponse;
 import com.FlightSearch.FlightSearch.service.AirportReader;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @RestController
 @IllegalExceptionProcessing
@@ -19,7 +21,7 @@ public class AirportController {
     private final AirportServices airportServices;
     private final AirportReader airportReader;
 
-    public AirportController(AirportServices airportServices, AirportReader airportReader, AirportRepository airportRepository) {
+    public AirportController(AirportServices airportServices, AirportReader airportReader, AirportDataRepository airportDataRepository) {
         this.airportServices = airportServices;
         this.airportReader = airportReader;
     }
@@ -29,7 +31,7 @@ public class AirportController {
         return airportServices.findExistingAirportByIataCode(iataCode);
     }
     @GetMapping("searchByLocation")
-    public AirportResponse searchAirportByLocation(@RequestParam(required = true) String location) {
+    public List<AirportResponse> searchAirportByLocation(@RequestParam(required = true) String location) {
         return airportServices.findAirportByDepartureFrom(location);
     }
 
@@ -55,8 +57,9 @@ public class AirportController {
 //            airportServices.updaterAirport(id, source);
 //        }
 //            return ResponseEntity.noContent().build();
-        if (airportServices.updateAirport(id, source) != null){
-            return ResponseEntity.noContent().build();
+        AirportResponse airportUpdated = airportServices.executeAirportUpdate(id, source);
+        if (airportUpdated != null){
+            return ResponseEntity.ok(airportUpdated);
         } else {
             return ResponseEntity.notFound().build();
         }
