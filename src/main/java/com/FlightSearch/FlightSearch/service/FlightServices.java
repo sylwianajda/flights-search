@@ -23,8 +23,8 @@ public class FlightServices {
 
     public Long addFlight(CreateFlightRequest flightRequest){
         Flight flight = makeFlightFromCreateFlightRequest(flightRequest);
-        sqlRepository.saveFlight(flight);
-        Long flightId = flight.getId();
+        Long flightId = sqlRepository.saveFlight(flight).getId();
+       // Long flightId = flight.getId();
         //flight.setAirport(Airport.from(airportDataRepository.findByLocation(flight.getDepartureTo())));
         //return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
         //FlightResponse flightResponse = new FlightResponse(sqlRepository.findById(flightId).get());
@@ -39,7 +39,6 @@ public class FlightServices {
     public Flight makeFlightFromCreateFlightRequest(CreateFlightRequest flightRequest){
         Flight flight = new Flight(flightRequest);
         sqlRepository.findById(flightRequest.getAirportId()).ifPresent(airport ->flight.setAirport(airport));
-        //sqlRepository.findById(flightRequest.getAirportId()).ifPresent(flight.setAirport(flightRequest.getAirportId().get()));
         return flight;
     }
 

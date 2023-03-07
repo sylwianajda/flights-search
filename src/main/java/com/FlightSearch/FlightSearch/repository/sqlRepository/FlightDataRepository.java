@@ -21,7 +21,7 @@ public interface FlightDataRepository extends JpaRepository<FlightData,Long> {
 
     FlightData save(FlightData entity);
 
-    //List<FlightData> findAllByAirportId(Integer id);
+    List<FlightData> findAllByAirportId(Integer id);
 
     @Query(value = """
             from FlightData f

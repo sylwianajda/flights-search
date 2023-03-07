@@ -2,6 +2,7 @@ package com.FlightSearch.FlightSearch.repository.sqlRepository;
 
 import com.FlightSearch.FlightSearch.repository.entities.*;
 import com.FlightSearch.FlightSearch.repository.ApiRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -67,8 +68,9 @@ public class SqlRepository implements ApiRepository {
     }
 
     @Override
-    public Optional<FlightData> findByDepartureTo() {
-        return Optional.empty();
+    public Optional<Flight> findByDepartureTo(String departureTo) {
+        Optional<Flight> flight = Optional.of(new Flight(flightDataRepository.findByDepartureTo(departureTo).get()));
+        return flight;
     }
 
     @Override
@@ -84,22 +86,33 @@ public class SqlRepository implements ApiRepository {
     }
 
     @Override
-    public List<FlightData> findAllByAirportId(Integer airportId) {
-        return null;
+    public List<Flight> findAllByAirportId(Integer airportId) {
+        List<Flight> flights = flightDataRepository.findAllByAirportId(airportId).stream()
+                .map(flightData ->  new Flight(flightData))
+                .collect(Collectors.toList());
+        return flights;
     }
 
     @Override
-    public List<FlightData> findMatch(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers) {
-        return flightDataRepository.findMatch(departureTo, arrivalTo, departureDate, numberOfPassengers);
+    public List<Flight> findMatch(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers) {
+        List<Flight> flights = flightDataRepository.findMatch(departureTo, arrivalTo, departureDate, numberOfPassengers).stream()
+                .map(flightData -> new Flight(flightData))
+                .collect(Collectors.toList());
+        return flights;
     }
 
 
     @Override
-    public List<FlightData> findReturnMatch() {
-        return null;
+    public List<Flight> findReturnMatch(String returnDepartureTo, String returnArrivalTo, LocalDateTime returnDepartureDate, int numberOfPassengers) {
+        List<Flight> flights = flightDataRepository.findReturnMatch(returnDepartureTo, returnArrivalTo, returnDepartureDate, numberOfPassengers).stream()
+                .map(flightData -> new Flight(flightData))
+                .collect(Collectors.toList());
+        return flights;
     }
     @Override
-    public BoardingPassData save() {
-        return null;
+    public BoardingPass save(BoardingPass entity) {
+        final BoardingPassData boardingPassData = new BoardingPassData(entity);
+        return new BoardingPass(boardingPassDataRepository.save(boardingPassData));
+
     }
 }

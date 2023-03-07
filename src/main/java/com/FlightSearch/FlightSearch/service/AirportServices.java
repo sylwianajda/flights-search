@@ -60,8 +60,8 @@ public class AirportServices {
                 source.getIataCode(),
                 source.getCountry(),
                 source.getLatitude(),
-                source.getLongitude(),
-                source.getFlights());
+                source.getLongitude());
+                //source.getFlights());
 
     }
 

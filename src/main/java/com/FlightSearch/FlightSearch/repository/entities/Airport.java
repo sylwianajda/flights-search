@@ -21,7 +21,7 @@ public class Airport {
     private String country;
     private Double latitude;
     private Double longitude;
-    private List<Flight> flights;
+//    private List<Flight> flights;
 
 
     public Airport(AirportData airportData) {
@@ -32,9 +32,9 @@ public class Airport {
         this.country = airportData.getCountry();
         this.latitude = airportData.getLatitude();
         this.longitude = airportData.getLongitude();
-        this.flights = airportData.getFlightsData().stream()
-                .map(Flight::new)
-                .collect(Collectors.toList());
+//        this.flights = airportData.getFlightsData().stream()
+//                .map(Flight::new)
+//                .collect(Collectors.toList());
     }
     @Override
     public String toString() {
@@ -46,8 +46,8 @@ public class Airport {
                 ", country='" + country + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", flights=" + flights.toString() +
-                '}';}
+                //", flights=" + flights.toString() +
+                "}";}
 
     public Airport(AirportRequest airportRequest) {
         this.id = airportRequest.getId();
@@ -57,7 +57,7 @@ public class Airport {
         this.country = airportRequest.getCountry();
         this.latitude = airportRequest.getLatitude();
         this.longitude = airportRequest.getLongitude();
-        this.flights = new ArrayList<>();
+        //this.flights = new ArrayList<>();
     }
     public void updateAirport(Airport preparedAirportToUpdate) {
                 name = preparedAirportToUpdate.name;
@@ -66,7 +66,7 @@ public class Airport {
                 country = preparedAirportToUpdate.country;
                 latitude = preparedAirportToUpdate.latitude;
                 longitude =preparedAirportToUpdate.longitude;
-                flights = new ArrayList<>();
+                //flights = new ArrayList<>();
     }
 
 
@@ -79,8 +79,8 @@ public class Airport {
                 airportRequest.getIataCode(),
                 airportRequest.getCountry(),
                 airportRequest.getLatitude(),
-                airportRequest.getLongitude(),
-                null
+                airportRequest.getLongitude()
+                //null
         );
 
     }

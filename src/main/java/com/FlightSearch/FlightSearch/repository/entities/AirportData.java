@@ -57,9 +57,9 @@ public class AirportData {
         this.country = airport.getCountry();
         this.latitude = airport.getLatitude();
         this.longitude = airport.getLongitude();
-        this.flightsData = airport.getFlights().stream()
-                .map(flight-> new FlightData(flight))
-                .collect(Collectors.toList());
+        this.flightsData = new ArrayList<>();//airport.getFlights().stream()
+                //.map(flight-> new FlightData(flight))
+                //.collect(Collectors.toList());
     }
 //    private static List<FlightData> convertFlightsToFlightData(List<Flight> flights) {
 //        List<FlightData> flightsData = flights.stream()

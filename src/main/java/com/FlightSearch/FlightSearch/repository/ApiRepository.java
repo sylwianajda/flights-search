@@ -1,6 +1,7 @@
 package com.FlightSearch.FlightSearch.repository;
 
 import com.FlightSearch.FlightSearch.repository.entities.*;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,17 +21,17 @@ public interface ApiRepository {
 
     boolean existsByIataCode(String iataCode);
 
-    Optional<FlightData> findByDepartureTo();
+    Optional<Flight> findByDepartureTo(String departureTo);
 
     Optional<Flight> findById(Long id);
 
     Flight saveFlight(Flight entity);
 
-    List<FlightData> findAllByAirportId(Integer airportId);
+    List<Flight> findAllByAirportId(Integer airportId);
 
-    List<FlightData> findMatch(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers);
+    List<Flight> findMatch(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers);
 
-    List<FlightData> findReturnMatch();
-    BoardingPassData save();
+    List<Flight> findReturnMatch(String returnDepartureTo, String returnArrivalTo, LocalDateTime returnDepartureDate, int numberOfPassengers);
+    BoardingPass save(BoardingPass entity);
 
 }

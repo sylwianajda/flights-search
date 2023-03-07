@@ -19,7 +19,7 @@ public class AirportResponseWithFlights {
     private String country;
     private Double latitude;
     private Double longitude;
-    private List<Flight> flights;
+    //private List<Flight> flights;
 
     public AirportResponseWithFlights(Airport airport) {
         this.id = airport.getId();
@@ -29,7 +29,7 @@ public class AirportResponseWithFlights {
         this.country = airport.getCountry();
         this.latitude = airport.getLatitude();
         this.longitude = airport.getLongitude();
-        this.flights =airport.getFlights();
+        //this.flights =airport.getFlights();
 
     }
 }
