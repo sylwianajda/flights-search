@@ -1,6 +1,7 @@
 package com.FlightSearch.FlightSearch.service;
 
 import com.FlightSearch.FlightSearch.model.FlightResponse;
+import com.FlightSearch.FlightSearch.model.Trip;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataRepository;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
 import com.FlightSearch.FlightSearch.repository.entities.Flight;
@@ -8,14 +9,18 @@ import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class FlightServices {
+public class FlightService {
     private final FlightDataRepository flightDataRepository;
     private final AirportDataRepository airportDataRepository;
 
     private SqlRepository sqlRepository;
 
-    public FlightServices(FlightDataRepository flightDataRepository, AirportDataRepository airportDataRepository, SqlRepository sqlRepository) {
+    public FlightService(FlightDataRepository flightDataRepository, AirportDataRepository airportDataRepository, SqlRepository sqlRepository) {
         this.flightDataRepository = flightDataRepository;
         this.airportDataRepository = airportDataRepository;
         this.sqlRepository = sqlRepository;
@@ -42,6 +47,25 @@ public class FlightServices {
         return flight;
     }
 
+    public List<List<FlightResponse>> searchMatchingFlights (Trip trip){
+        List<List<Flight>> matchingFlights = new ArrayList<>();
+        List<Flight> flights = sqlRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
+        List<Flight> returnFlights = sqlRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(), trip.getNumberOfPassengers());
+        matchingFlights.add(flights);
+        if (returnFlights.size() != 0) {
+            matchingFlights.add(returnFlights);
+        }
+        return makeFlightsResponseFromFlights(matchingFlights);
+    }
+
+    public List<List<FlightResponse>> makeFlightsResponseFromFlights(List<List<Flight>> matchingFlights){
+        List<List<FlightResponse>> matchingFlightsResponse = matchingFlights.stream()
+                .map(flightList -> flightList.stream()
+                        .map(flight -> new FlightResponse(flight))
+                        .collect(Collectors.toList()))
+                .collect(Collectors.toList());
+        return matchingFlightsResponse;
+    }
 
 //    public FlightDto createFlightDto(Flight flight){
 //        var result = new FlightDto();

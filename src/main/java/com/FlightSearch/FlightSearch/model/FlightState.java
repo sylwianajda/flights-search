@@ -1,19 +1,20 @@
 package com.FlightSearch.FlightSearch.model;
 
-import com.FlightSearch.FlightSearch.repository.entities.FlightData;
-import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
+import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 
 public class FlightState {
-    private final FlightDataRepository flightDataRepository;
-    private FlightData flightData;
+
+    private SqlRepository sqlRepository;
+    private Flight flight;
     private int currentNumberOfSeatsAvailable;
 
-    public FlightData getFlight() {
-        return flightData;
+    public Flight getFlight() {
+        return flight;
     }
 
-    public void setFlight(FlightData flightData) {
-        this.flightData = flightData;
+    public void setFlight(Flight flight) {
+        this.flight = flight;
     }
 
     public int getCurrentNumberOfSeatsAvailable() {
@@ -24,23 +25,23 @@ public class FlightState {
         this.currentNumberOfSeatsAvailable = currentNumberOfSeatsAvailable;
     }
 
-    public FlightState(FlightDataRepository flightDataRepository, FlightData flightData) {
-        this.flightDataRepository = flightDataRepository;
-        this.flightData = flightData;
-        this.currentNumberOfSeatsAvailable = flightData.getNumberOfSeatsAvailable();
+    public FlightState(SqlRepository sqlRepository, Flight flight) {
+        this.sqlRepository = sqlRepository;
+        this.flight = flight;
+        this.currentNumberOfSeatsAvailable = flight.getNumberOfSeatsAvailable();
     }
     public void nextOccupiedSeat() {
         currentNumberOfSeatsAvailable--;
-        flightDataRepository.findById(getFlight().getId()).
+        sqlRepository.findById(getFlight().getId()).
                 ifPresent(flight1 -> {flight1.setNumberOfSeatsAvailable(currentNumberOfSeatsAvailable);
-                flightDataRepository.save(flight1);
+                sqlRepository.saveFlight(flight1);
                 });
     }
     public void nextAvailableSeat() {
         currentNumberOfSeatsAvailable++;
-        flightDataRepository.findById(getFlight().getId()).
+        sqlRepository.findById(getFlight().getId()).
                 ifPresent(flight1 -> {flight1.setNumberOfSeatsAvailable(currentNumberOfSeatsAvailable);
-                    flightDataRepository.save(flight1);
+                    sqlRepository.saveFlight(flight1);
                 });
     }
 

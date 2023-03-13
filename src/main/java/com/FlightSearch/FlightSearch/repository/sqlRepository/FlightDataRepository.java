@@ -21,7 +21,7 @@ public interface FlightDataRepository extends JpaRepository<FlightData,Long> {
 
     FlightData save(FlightData entity);
 
-    List<FlightData> findAllByAirportId(Integer id);
+    //List<FlightData> findAllByAirportId(Integer id);
 
     @Query(value = """
             from FlightData f
@@ -58,6 +58,13 @@ public interface FlightDataRepository extends JpaRepository<FlightData,Long> {
             )
             """)
     List<FlightData> findReturnMatch(@Param("returnDepartureTo") String returnDepartureTo, @Param("returnArrivalTo") String returnArrivalTo, @Param("returnDepartureDate") LocalDateTime returnDepartureDate, int numberOfPassengers);
+
+    @Query(value = """
+            update FlightData f
+            set f.numberOfSeatsAvailable=(f.numberOfSeatsAvailable + 1)
+            where f.id =:id
+            """)
+    void increaseSeatsAvailable(@Param("id") Long flightId);
 
     //    @Query(value = "from Flight f where f.departureTo=:departureTo and f.arrivalTo=:arrivalTo and f.departureDate>=:departureDate order by f.departureDate ASC ")
 //    List<Flight> findMatchInOneDay(@Param("departureTo") String departureTo, @Param("arrivalTo") String arrivalTo, @Param("departureDate") LocalDateTime departureDate);

@@ -27,11 +27,18 @@ public interface ApiRepository {
 
     Flight saveFlight(Flight entity);
 
-    List<Flight> findAllByAirportId(Integer airportId);
+    //List<Flight> findAllByAirportId(Integer id);
 
     List<Flight> findMatch(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers);
 
     List<Flight> findReturnMatch(String returnDepartureTo, String returnArrivalTo, LocalDateTime returnDepartureDate, int numberOfPassengers);
-    BoardingPass save(BoardingPass entity);
+    BoardingPass saveBoardingPass(BoardingPass entity);
+
+    Optional<BoardingPass> findBoardingPassById(Long id);
+
+    void deleteBoardingPassById(Long id);
+
+    void delete(BoardingPass boardingPass);
+    void increaseSeatsAvailable(Long flightId);
 
 }

@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,12 +37,13 @@ public class FlightData {
     private BigDecimal price;
     @NotBlank
     private int numberOfSeatsAvailable;
-    //@JsonIgnore
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "airport_id")
     private AirportData airportData;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "flightData", orphanRemoval=true)
-    private List<BoardingPassData> boardingPassData;
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "flightData", orphanRemoval=true)
+//    private List<BoardingPassData> boardingPassData;
 
     public FlightData(long id, String flightNumber, String departureTo, String arrivalTo,
                       LocalDateTime departureDate, LocalDateTime arrivalDate, BigDecimal price,
@@ -67,9 +69,10 @@ public class FlightData {
         this.price = flight.getPrice();
         this.numberOfSeatsAvailable = flight.getNumberOfSeatsAvailable();
         this.airportData = new AirportData(flight.getAirport());
-        this.boardingPassData = flight.getBoardingPass().stream()
-                .map(boardingPass-> new BoardingPassData(boardingPass))
-                .collect(Collectors.toList());
+        //this.boardingPassData = new ArrayList<>();
+//                flight.getBoardingPass().stream()
+//                .map(boardingPass-> new BoardingPassData(boardingPass))
+//                .collect(Collectors.toList());
     }
 
     public long getId() {

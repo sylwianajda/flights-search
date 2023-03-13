@@ -33,7 +33,12 @@ public class Flight {
 
     private Airport airport;
 
-    private List<BoardingPass> boardingPass;
+    //private List<BoardingPass> boardingPass;
+
+    public Flight() {
+    }
+
+
 
     public Flight(FlightData flightData) {
         this.id = flightData.getId();
@@ -45,9 +50,9 @@ public class Flight {
         this.price = flightData.getPrice();
         this.numberOfSeatsAvailable = flightData.getNumberOfSeatsAvailable();
         this.airport = new Airport(flightData.getAirportData());
-        this.boardingPass = flightData.getBoardingPassData().stream()
-                .map(BoardingPass::new)
-                .collect(Collectors.toList());
+//        this.boardingPass = flightData.getBoardingPassData().stream()
+//                .map(BoardingPass::new)
+//                .collect(Collectors.toList());
     }
 
 
@@ -61,7 +66,7 @@ public class Flight {
         this.price = flightRequest.getPrice();
         this.numberOfSeatsAvailable = flightRequest.getNumberOfSeatsAvailable();
         this.airport = null;//sqlrepository.finById(flightRequest.getAirportId());
-        this.boardingPass = new ArrayList<>();
+        //this.boardingPass = new ArrayList<>();
     }
 
 
@@ -89,7 +94,6 @@ public class Flight {
                 ", price=" + price +
                 ", numberOfSeatsAvailable=" + numberOfSeatsAvailable +
                 ", airport=" + airport +
-                ", boardingPassData=" + boardingPass +
                 '}';
     }
 }

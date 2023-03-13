@@ -28,7 +28,7 @@ public class AirportData {
     private String country;
     private Double latitude;
     private Double longitude;
-    //@JsonIgnore
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "airportData")
     private List<FlightData> flightsData;
 

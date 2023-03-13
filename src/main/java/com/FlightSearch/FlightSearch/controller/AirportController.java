@@ -5,7 +5,7 @@ import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataReposit
 import com.FlightSearch.FlightSearch.model.AirportRequest;
 import com.FlightSearch.FlightSearch.model.AirportResponse;
 import com.FlightSearch.FlightSearch.service.AirportReader;
-import com.FlightSearch.FlightSearch.service.AirportServices;
+import com.FlightSearch.FlightSearch.service.AirportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,21 +18,21 @@ import java.util.List;
 @IllegalExceptionProcessing
 @RequestMapping("/airport")
 public class AirportController {
-    private final AirportServices airportServices;
+    private final AirportService airportService;
     private final AirportReader airportReader;
 
-    public AirportController(AirportServices airportServices, AirportReader airportReader, AirportDataRepository airportDataRepository) {
-        this.airportServices = airportServices;
+    public AirportController(AirportService airportService, AirportReader airportReader, AirportDataRepository airportDataRepository) {
+        this.airportService = airportService;
         this.airportReader = airportReader;
     }
 
     @GetMapping("searchByIataCode")
     public boolean checkAirportExistsFromIataCode(@RequestParam(required = true)@NotEmpty String iataCode) {
-        return airportServices.findExistingAirportByIataCode(iataCode);
+        return airportService.findExistingAirportByIataCode(iataCode);
     }
     @GetMapping("searchByLocation")
     public List<AirportResponse> searchAirportByLocation(@RequestParam(required = true) String location) {
-        return airportServices.findAirportByDepartureFrom(location);
+        return airportService.findAirportByDepartureFrom(location);
     }
 
     @GetMapping("searchById/{id}")
@@ -40,7 +40,7 @@ public class AirportController {
 //        if (!airportRepository.existsById(airportId)) {
 //            return ResponseEntity.notFound().build();
 //        }
-        return ResponseEntity.ok(airportServices.findAirportById(id));
+        return ResponseEntity.ok(airportService.findAirportById(id));
     }
 
     @GetMapping("/addAirports")
@@ -57,7 +57,7 @@ public class AirportController {
 //            airportServices.updaterAirport(id, source);
 //        }
 //            return ResponseEntity.noContent().build();
-        AirportResponse airportUpdated = airportServices.executeAirportUpdate(id, source);
+        AirportResponse airportUpdated = airportService.executeAirportUpdate(id, source);
         if (airportUpdated != null){
             return ResponseEntity.ok(airportUpdated);
         } else {

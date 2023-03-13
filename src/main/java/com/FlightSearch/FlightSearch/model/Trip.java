@@ -1,5 +1,6 @@
 package com.FlightSearch.FlightSearch.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 @Getter
 @Setter
+
 public class Trip {
     @NotBlank(message = "Trip's departure must not be empty")
     private String departureTo;
@@ -20,8 +22,8 @@ public class Trip {
     @NotBlank
     private int numberOfPassengers;
 
-//    public Trip() {
-//    }
+    public Trip() {
+    }
 
     public Trip(String departureTo, String arrivalTo, LocalDateTime departureDate, boolean returnTrip, int numberOfPassengers) {
         this.departureTo = departureTo;

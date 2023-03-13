@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class CreateFlightRequest {
-    @NotBlank
+
     private long id;
     @NotBlank
     private String flightNumber;

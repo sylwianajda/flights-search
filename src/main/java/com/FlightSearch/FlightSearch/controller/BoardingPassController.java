@@ -1,11 +1,9 @@
 package com.FlightSearch.FlightSearch.controller;
 
-import com.FlightSearch.FlightSearch.repository.entities.BoardingPassData;
-import com.FlightSearch.FlightSearch.model.Passenger;
-import com.FlightSearch.FlightSearch.repository.sqlRepository.BoardingPassDataRepository;
-import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
-import com.FlightSearch.FlightSearch.service.BoardingPassServices;
-import org.springframework.http.HttpStatus;
+import com.FlightSearch.FlightSearch.controller.exceptions.IllegalExceptionProcessing;
+import com.FlightSearch.FlightSearch.model.BoardingPassBookingRequest;
+import com.FlightSearch.FlightSearch.model.BoardingPassResponse;
+import com.FlightSearch.FlightSearch.service.BoardingPassService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -13,33 +11,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@IllegalExceptionProcessing
 @RequestMapping("/boardingPass")
 public class BoardingPassController {
-    private final BoardingPassServices boardingPassServices;
-    private final FlightDataRepository flightDataRepository;
-    private final BoardingPassDataRepository boardingPassDataRepository;
+    private final BoardingPassService boardingPassService;
 
 
-    public BoardingPassController(BoardingPassServices boardingPassServices, FlightDataRepository flightDataRepository,
-                                  BoardingPassDataRepository boardingPassDataRepository) {
-        this.boardingPassServices = boardingPassServices;
-        this.flightDataRepository = flightDataRepository;
-        this.boardingPassDataRepository = boardingPassDataRepository;
+    public BoardingPassController(BoardingPassService boardingPassService) {
+        this.boardingPassService = boardingPassService;
     }
 
     @Transactional
     @PostMapping("/booking/flight/{flightId}")/*/{numberOfPassengers}*/
-    ResponseEntity<?> postBookingBoardingPass(@PathVariable Long flightId, @RequestBody List<Passenger> passengers) {
-        if (!flightDataRepository.existsById(flightId)) {
-            return ResponseEntity.notFound().build();
-        }
-        List<BoardingPassData> boardingPassDataList = boardingPassServices.generateBoardingPassesForAllPassengers(passengers, flightId);
-        if ((boardingPassDataList) != null) {
-            return ResponseEntity.ok(boardingPassDataList);
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
+    ResponseEntity<List<BoardingPassResponse>> postBookingBoardingPass(@PathVariable Long flightId, @RequestBody final BoardingPassBookingRequest boardingPassBookingRequest){//final List<Passenger> passengers) {
+//        if (!flightDataRepository.existsById(flightId)) {
+//            return ResponseEntity.notFound().build();
+//        }
+        List<BoardingPassResponse> boardingPassList = boardingPassService.generateBoardingPassesForAllPassengers(boardingPassBookingRequest, flightId);
+        //if ((boardingPassDataList) != null) {
+            return ResponseEntity.ok(boardingPassList);
 
-        }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).build();//.body("No seats available. Please try booking a different flight");
+//
+//        }
     }
 //        Flight flight= flightRepository.findById(id).get();
 //        FlightState flightState = new FlightState(flightRepository, flight);
@@ -53,14 +48,12 @@ public class BoardingPassController {
 //            return ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
 //        }
 
-    @Transactional
-    @DeleteMapping("/deleteBooking/{id}")
-    ResponseEntity<?> deleteBoardingPass(@PathVariable Long id) {
+    @DeleteMapping("/deleteBooking/{boardingPassId}")
+    ResponseEntity<String> deleteBoardingPass(@PathVariable Long boardingPassId) {
 //        if (!boardingPassRepository.existsById(id)) {
 //            return ResponseEntity.notFound().build();
 //        }
-//        boardingPassServices.deleteBoardingPass(id);
-//        return ResponseEntity.ok("BoardingPass has been deleted");
-        return null;
+        boardingPassService.bookingCancellation(boardingPassId);
+        return ResponseEntity.ok("BoardingPass has been deleted");
     }
 }

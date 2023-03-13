@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AirportServices {
+public class AirportService {
     private SqlRepository sqlRepository;
 
 
-    public AirportServices(SqlRepository sqlRepository) {
+    public AirportService(SqlRepository sqlRepository) {
         this.sqlRepository = sqlRepository;
     }
     public List<AirportResponse> findAirportByDepartureFrom(String location) {

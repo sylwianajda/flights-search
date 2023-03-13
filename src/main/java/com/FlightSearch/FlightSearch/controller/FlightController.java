@@ -1,76 +1,63 @@
 package com.FlightSearch.FlightSearch.controller;
 
 import com.FlightSearch.FlightSearch.model.FlightResponse;
-import com.FlightSearch.FlightSearch.repository.entities.FlightData;
 import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.model.Trip;
-import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
-import com.FlightSearch.FlightSearch.service.FlightServices;
+import com.FlightSearch.FlightSearch.service.FlightService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/flight")
 public class FlightController {
-    private final FlightServices flightServices;
-    private final FlightDataRepository flightDataRepository;
+    private final FlightService flightService;
 
-
-    public FlightController(FlightServices flightServices,
-                            FlightDataRepository flightDataRepository) {
-        this.flightServices = flightServices;
-
-        this.flightDataRepository = flightDataRepository;
-
+    public FlightController(FlightService flightService) {
+        this.flightService = flightService;
     }
 
     @PostMapping("/add")
     ResponseEntity<FlightResponse> postFlight(@RequestBody @Valid CreateFlightRequest flightRequest) {
-        Long flightId = flightServices.addFlight(flightRequest);
-        FlightResponse result = flightServices.makeFlightResponseFromFlight(flightId);
+        Long flightId = flightService.addFlight(flightRequest);
+        FlightResponse result = flightService.makeFlightResponseFromFlight(flightId);
         //flightData.setAirportData(airportDataRepository.findByLocation(flightData.getDepartureTo()));
         return ResponseEntity.ok(result);
         //ResponseEntity.created(URI.create("/" + result.getId())).body(result);
     }
 
     @GetMapping("/match")
-    ResponseEntity<List<List<FlightData>>> getMatchingFlights(@RequestBody @Valid Trip trip) {
-        List<List<FlightData>> matchingFlights = new ArrayList<>();
+    ResponseEntity<List<List<FlightResponse>>> getMatchingFlights(@RequestBody @Valid final Trip trip) {
+
         if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
             return ResponseEntity.unprocessableEntity().build();
         }
         if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
             return ResponseEntity.unprocessableEntity().build();
         }
-        List<FlightData> flightsData = flightDataRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
-        List<FlightData> returnFlightsData = flightDataRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(),trip.getNumberOfPassengers());
-        matchingFlights.add(flightsData);
-        if (returnFlightsData.size() != 0) {
-            matchingFlights.add(returnFlightsData);
-        }
-        return ResponseEntity.ok(matchingFlights);
+        List<List<FlightResponse>> matchingFlightsResponse = flightService.searchMatchingFlights(trip);
+        return ResponseEntity.ok(matchingFlightsResponse);
     }
-
-//    @GetMapping ("/matching")
-//    @RequestParameterValidation
-//    ResponseEntity<List<Flight>> findMatchingFlights(@RequestParam (required = true) String departureFrom,
-//                                                     @RequestParam (required = true) String arrivalTo,
-//                                                     @RequestParam (required = true) LocalDateTime departDate,
-//                                                     @RequestParam (required = true) Integer numberOfPassengers,
-//                                                     @RequestParam (required = true) boolean returnTrip,
-//                                                     @RequestParam (required = false) LocalDateTime returnDepartDate) {
-//
-//        if (returnTrip && returnDepartDate != null) {
+//    ResponseEntity<List<List<FlightData>>> getMatchingFlights(@RequestBody @Valid Trip trip) {
+//        List<List<FlightData>> matchingFlights = new ArrayList<>();
+//        if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
 //            return ResponseEntity.unprocessableEntity().build();
 //        }
-//
-//        List<Flight> flights =flightRepository.findMatch(departureFrom,arrivalTo,departDate);
-//        return ResponseEntity.ok(flights);
+//        if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
+//            return ResponseEntity.unprocessableEntity().build();
+//        }
+//        List<FlightData> flightsData = flightDataRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
+//        List<FlightData> returnFlightsData = flightDataRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(),trip.getNumberOfPassengers());
+//        matchingFlights.add(flightsData);
+//        if (returnFlightsData.size() != 0) {
+//            matchingFlights.add(returnFlightsData);
+//        }
+//        return ResponseEntity.ok(matchingFlights);
 //    }
+
+
 //        Integer airportId = airportServices.airportFinderByDepartureFrom(trip.getDepartureFrom());
 //        List<Flight> flightsDepartureAirport = flightRepository.findAllByAirportId(airportId);
 //        List<Flight> flightsFromDepartureAirportToArrivalAirport = new ArrayList<>();

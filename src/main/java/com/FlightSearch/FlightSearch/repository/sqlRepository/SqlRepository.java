@@ -41,7 +41,6 @@ public class SqlRepository implements ApiRepository {
 
     @Override
     public Optional<Airport> findById(Integer id) {
-        //Optional<Airport> airport = Optional.of(Airport.from(airportDataRepository.findById(id).get()));
         Optional<Airport> airport = Optional.of(new Airport(airportDataRepository.findById(id).get()));
         return airport;
     }
@@ -85,13 +84,13 @@ public class SqlRepository implements ApiRepository {
         return new Flight(flightDataRepository.save(flightData));
     }
 
-    @Override
-    public List<Flight> findAllByAirportId(Integer airportId) {
-        List<Flight> flights = flightDataRepository.findAllByAirportId(airportId).stream()
-                .map(flightData ->  new Flight(flightData))
-                .collect(Collectors.toList());
-        return flights;
-    }
+//    @Override
+//    public List<Flight> findAllByAirportId(Integer airportId) {
+//        List<Flight> flights = flightDataRepository.findAllByAirportId(airportId).stream()
+//                .map(flightData ->  new Flight(flightData))
+//                .collect(Collectors.toList());
+//        return flights;
+//    }
 
     @Override
     public List<Flight> findMatch(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers) {
@@ -110,9 +109,34 @@ public class SqlRepository implements ApiRepository {
         return flights;
     }
     @Override
-    public BoardingPass save(BoardingPass entity) {
+    public BoardingPass saveBoardingPass(BoardingPass entity) {
         final BoardingPassData boardingPassData = new BoardingPassData(entity);
         return new BoardingPass(boardingPassDataRepository.save(boardingPassData));
 
+    }
+
+    @Override
+    public Optional<BoardingPass> findBoardingPassById(Long id) {
+        Optional<BoardingPass> boardingPass = Optional.of(new BoardingPass(boardingPassDataRepository.findById(id).get()));
+        return boardingPass;
+    }
+
+    @Override
+    public void deleteBoardingPassById(Long id) {
+        //final BoardingPassData boardingPassData = new BoardingPassData(entity);
+        //flightDataRepository.findById(id).get()
+        boardingPassDataRepository.deleteById(id);
+
+    }
+
+    @Override
+    public void delete(BoardingPass boardingPass) {
+        //final BoardingPassData boardingPassData = new BoardingPassData(boardingPass);
+        boardingPassDataRepository.delete(boardingPassDataRepository.getReferenceById(boardingPass.getBoardingPassId()));
+    }
+
+    @Override
+    public void increaseSeatsAvailable(Long flightId) {
+        flightDataRepository.increaseSeatsAvailable(flightId);
     }
 }
