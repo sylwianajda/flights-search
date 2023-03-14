@@ -9,10 +9,10 @@ CREATE TABLE flightssearch.airport(
 );
 DROP TABLE if EXISTS flightssearch.flights;
 CREATE TABLE flightssearch.flights(
-    flight_id INT primary key not null AUTO_INCREMENT,
-    departure_from varchar(255),
+    id bigint primary key not null AUTO_INCREMENT,
+    departure_to varchar(255),
     arrival_to varchar(255),
-    departure_date date,
+    departure_date datetime,
     number_of_seats INT,
     price decimal(19,2)
 );
