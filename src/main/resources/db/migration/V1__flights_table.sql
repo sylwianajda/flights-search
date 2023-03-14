@@ -1,3 +1,12 @@
+CREATE TABLE flightssearch.airport(
+    id INT primary key not null AUTO_INCREMENT,
+    location varchar(255),
+    country varchar(255),
+    name varchar(255),
+    iata_code varchar(255),
+    latitude double,
+    longitude double
+);
 DROP TABLE if EXISTS flightssearch.flights;
 CREATE TABLE flightssearch.flights(
     flight_id INT primary key not null AUTO_INCREMENT,
