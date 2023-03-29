@@ -11,6 +11,7 @@ import org.hibernate.annotations.Cascade;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import static org.hibernate.annotations.CascadeType.MERGE;
 import static org.hibernate.annotations.CascadeType.PERSIST;
 
 @Entity
@@ -30,7 +31,7 @@ public class BoardingPassData {
 //        private FlightDto flightDto = new FlightDto(flightflight.getId());
         @JsonIgnore
         @ManyToOne(fetch = FetchType.EAGER )
-        @Cascade(PERSIST)
+        @Cascade(MERGE)
         @JoinColumn(name = "flight_id")
         private FlightData flightData;
 
@@ -41,7 +42,7 @@ public class BoardingPassData {
         }
 
         public BoardingPassData(BoardingPass boardingPass) {
-                this.boardingPassId = boardingPass.getBoardingPassId();
+                //this.boardingPassId = boardingPass.getBoardingPassId();
                 this.firstName = boardingPass.getFirstName();
                 this.lastName = boardingPass.getLastName();
                 this.flightData = new FlightData(boardingPass.getFlight());

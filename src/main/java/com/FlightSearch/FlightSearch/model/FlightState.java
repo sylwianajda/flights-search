@@ -32,14 +32,14 @@ public class FlightState {
     }
     public void nextOccupiedSeat() {
         currentNumberOfSeatsAvailable--;
-        sqlRepository.findById(getFlight().getId()).
+        sqlRepository.findFlightById(getFlight().getId()).
                 ifPresent(flight1 -> {flight1.setNumberOfSeatsAvailable(currentNumberOfSeatsAvailable);
                 sqlRepository.saveFlight(flight1);
                 });
     }
     public void nextAvailableSeat() {
         currentNumberOfSeatsAvailable++;
-        sqlRepository.findById(getFlight().getId()).
+        sqlRepository.findFlightById(getFlight().getId()).
                 ifPresent(flight1 -> {flight1.setNumberOfSeatsAvailable(currentNumberOfSeatsAvailable);
                     sqlRepository.saveFlight(flight1);
                 });

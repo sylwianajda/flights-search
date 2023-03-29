@@ -2,6 +2,7 @@ package com.FlightSearch.FlightSearch.repository.sqlRepository;
 
 import com.FlightSearch.FlightSearch.repository.entities.FlightData;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -59,12 +60,28 @@ public interface FlightDataRepository extends JpaRepository<FlightData,Long> {
             """)
     List<FlightData> findReturnMatch(@Param("returnDepartureTo") String returnDepartureTo, @Param("returnArrivalTo") String returnArrivalTo, @Param("returnDepartureDate") LocalDateTime returnDepartureDate, int numberOfPassengers);
 
+    @Modifying
     @Query(value = """
             update FlightData f
-            set f.numberOfSeatsAvailable=(f.numberOfSeatsAvailable + 1)
+            set f.numberOfSeatsAvailable = (f.numberOfSeatsAvailable + 1)
             where f.id =:id
             """)
     void increaseSeatsAvailable(@Param("id") Long flightId);
+
+    @Modifying
+    @Query(value = """
+            update FlightData f
+            set f.numberOfSeatsAvailable = f.numberOfSeatsAvailable - 1
+            where f.id =:id
+            """)
+    void decreaseSeatsAvailable(@Param("id") Long flightId);
+
+    @Query(value = """
+            select f.numberOfSeatsAvailable
+            from FlightData f
+            where f.id =:id
+            """)
+    Integer getCurrentNumberOfSeatsAvailable(@Param("id") Long flightId);
 
     //    @Query(value = "from Flight f where f.departureTo=:departureTo and f.arrivalTo=:arrivalTo and f.departureDate>=:departureDate order by f.departureDate ASC ")
 //    List<Flight> findMatchInOneDay(@Param("departureTo") String departureTo, @Param("arrivalTo") String arrivalTo, @Param("departureDate") LocalDateTime departureDate);

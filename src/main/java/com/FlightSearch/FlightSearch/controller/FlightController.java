@@ -4,11 +4,16 @@ import com.FlightSearch.FlightSearch.model.FlightResponse;
 import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.model.Trip;
 import com.FlightSearch.FlightSearch.service.FlightService;
-import org.springframework.http.ResponseEntity;
+import org.json.JSONObject;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/flight")
@@ -39,6 +44,22 @@ public class FlightController {
         }
         List<List<FlightResponse>> matchingFlightsResponse = flightService.searchMatchingFlights(trip);
         return ResponseEntity.ok(matchingFlightsResponse);
+    }
+    @PostMapping("/getFlighFromExternalAPI")
+    public Object getFlightFromExternalAPI(@RequestBody @Valid final Trip trip){
+        if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-API-Key", "109353c6-6432-4acf-8e77-ef842f64a664");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Trip> entity = new HttpEntity<>(trip, headers);
+        ResponseEntity<String> response = restTemplate.exchange("http://localhost:8084/getFlight", HttpMethod.POST, entity, String.class);
+        return response.getBody();
     }
 //    ResponseEntity<List<List<FlightData>>> getMatchingFlights(@RequestBody @Valid Trip trip) {
 //        List<List<FlightData>> matchingFlights = new ArrayList<>();

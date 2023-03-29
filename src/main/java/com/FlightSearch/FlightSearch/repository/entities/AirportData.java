@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -31,6 +31,17 @@ public class AirportData {
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "airportData")
     private List<FlightData> flightsData;
+
+    public AirportData(int id, String name, String location, String iataCode, String country, Double latitude, Double longitude, List<FlightData> flightsData) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.iataCode = iataCode;
+        this.country = country;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.flightsData = flightsData;
+    }
 
     public AirportData(String name, String location, String iataCode, String country, Double latitude, Double longitude) {
         this.name = name;

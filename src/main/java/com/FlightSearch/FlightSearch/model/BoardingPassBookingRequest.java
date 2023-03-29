@@ -14,7 +14,7 @@ public class BoardingPassBookingRequest {
     public BoardingPassBookingRequest() {
 
     }
-    private long boardingPassId;
+    //private long boardingPassId;
 
     private List<Passenger> passengers;
 

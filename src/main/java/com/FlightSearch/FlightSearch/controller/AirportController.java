@@ -30,6 +30,7 @@ public class AirportController {
     public boolean checkAirportExistsFromIataCode(@RequestParam(required = true)@NotEmpty String iataCode) {
         return airportService.findExistingAirportByIataCode(iataCode);
     }
+
     @GetMapping("searchByLocation")
     public List<AirportResponse> searchAirportByLocation(@RequestParam(required = true) String location) {
         return airportService.findAirportByDepartureFrom(location);
@@ -46,23 +47,24 @@ public class AirportController {
     @GetMapping("/addAirports")
     public String addAirports() {
         airportReader.saveAirportsDataFromList();
-        return "Airports's been added";
+        return "Airports have been added";
     }
+
     @Transactional
     @PutMapping("/updateAirport/{id}")
     public ResponseEntity<AirportResponse> updateAirport(@PathVariable int id, @Valid @RequestBody AirportRequest source) {
-//        if (!airportRepository.existsById(id)) {
+        AirportResponse airportUpdated = airportService.executeAirportUpdate(id, source);
+        if (airportUpdated != null) {
+            return ResponseEntity.ok(airportUpdated);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+//               if (!airportRepository.existsById(id)) {
 //            return ResponseEntity.notFound().build();
 //        } else {
 //            airportServices.updaterAirport(id, source);
 //        }
 //            return ResponseEntity.noContent().build();
-        AirportResponse airportUpdated = airportService.executeAirportUpdate(id, source);
-        if (airportUpdated != null){
-            return ResponseEntity.ok(airportUpdated);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 
 }

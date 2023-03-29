@@ -2,7 +2,6 @@ package com.FlightSearch.FlightSearch.repository.sqlRepository;
 
 import com.FlightSearch.FlightSearch.repository.entities.*;
 import com.FlightSearch.FlightSearch.repository.ApiRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -40,7 +39,7 @@ public class SqlRepository implements ApiRepository {
     }
 
     @Override
-    public Optional<Airport> findById(Integer id) {
+    public Optional<Airport> findAirportById(Integer id) {
         Optional<Airport> airport = Optional.of(new Airport(airportDataRepository.findById(id).get()));
         return airport;
     }
@@ -72,8 +71,7 @@ public class SqlRepository implements ApiRepository {
         return flight;
     }
 
-    @Override
-    public Optional<Flight> findById(Long id) {
+    public Optional<Flight> findFlightById(Long id) {
         Optional<Flight> flight = Optional.of(new Flight(flightDataRepository.findById(id).get()));
         return flight;
     }
@@ -138,5 +136,15 @@ public class SqlRepository implements ApiRepository {
     @Override
     public void increaseSeatsAvailable(Long flightId) {
         flightDataRepository.increaseSeatsAvailable(flightId);
+    }
+
+    @Override
+    public void decreaseSeatsAvailable(Long flightId/*, Integer numberOfSeatsAfterBookingBoardingPass*/) {
+    flightDataRepository.decreaseSeatsAvailable(flightId /*, numberOfSeatsAfterBookingBoardingPass*/);
+    }
+
+    @Override
+    public Integer getCurrentNumberOfSeatsAvailable(Long flightId) {
+        return flightDataRepository.getCurrentNumberOfSeatsAvailable(flightId);
     }
 }

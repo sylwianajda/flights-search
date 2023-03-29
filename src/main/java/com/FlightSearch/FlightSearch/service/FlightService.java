@@ -2,8 +2,6 @@ package com.FlightSearch.FlightSearch.service;
 
 import com.FlightSearch.FlightSearch.model.FlightResponse;
 import com.FlightSearch.FlightSearch.model.Trip;
-import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataRepository;
-import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
 import com.FlightSearch.FlightSearch.repository.entities.Flight;
 import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
@@ -15,39 +13,35 @@ import java.util.stream.Collectors;
 
 @Service
 public class FlightService {
-    private final FlightDataRepository flightDataRepository;
-    private final AirportDataRepository airportDataRepository;
-
     private SqlRepository sqlRepository;
 
-    public FlightService(FlightDataRepository flightDataRepository, AirportDataRepository airportDataRepository, SqlRepository sqlRepository) {
-        this.flightDataRepository = flightDataRepository;
-        this.airportDataRepository = airportDataRepository;
+    public FlightService(SqlRepository sqlRepository) {
         this.sqlRepository = sqlRepository;
     }
 
-    public Long addFlight(CreateFlightRequest flightRequest){
+    public Long addFlight(CreateFlightRequest flightRequest) {
         Flight flight = makeFlightFromCreateFlightRequest(flightRequest);
         Long flightId = sqlRepository.saveFlight(flight).getId();
-       // Long flightId = flight.getId();
+        // Long flightId = flight.getId();
         //flight.setAirport(Airport.from(airportDataRepository.findByLocation(flight.getDepartureTo())));
         //return ResponseEntity.created(URI.create("/" + result.getId())).body(result);
         //FlightResponse flightResponse = new FlightResponse(sqlRepository.findById(flightId).get());
         return flightId;
     }
-    public FlightResponse makeFlightResponseFromFlight(Long flightId){
-        Flight flight = sqlRepository.findById(flightId).get();
+
+    public FlightResponse makeFlightResponseFromFlight(Long flightId) {
+        Flight flight = sqlRepository.findFlightById(flightId).get();
         FlightResponse flightResponse = new FlightResponse(flight);
         return flightResponse;
     }
 
-    public Flight makeFlightFromCreateFlightRequest(CreateFlightRequest flightRequest){
+    public Flight makeFlightFromCreateFlightRequest(CreateFlightRequest flightRequest) {
         Flight flight = new Flight(flightRequest);
-        sqlRepository.findById(flightRequest.getAirportId()).ifPresent(airport ->flight.setAirport(airport));
+        sqlRepository.findAirportById(flightRequest.getAirportId()).ifPresent(airport -> flight.setAirport(airport));
         return flight;
     }
 
-    public List<List<FlightResponse>> searchMatchingFlights (Trip trip){
+    public List<List<FlightResponse>> searchMatchingFlights(Trip trip) {
         List<List<Flight>> matchingFlights = new ArrayList<>();
         List<Flight> flights = sqlRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
         List<Flight> returnFlights = sqlRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(), trip.getNumberOfPassengers());
@@ -58,7 +52,7 @@ public class FlightService {
         return makeFlightsResponseFromFlights(matchingFlights);
     }
 
-    public List<List<FlightResponse>> makeFlightsResponseFromFlights(List<List<Flight>> matchingFlights){
+    public List<List<FlightResponse>> makeFlightsResponseFromFlights(List<List<Flight>> matchingFlights) {
         List<List<FlightResponse>> matchingFlightsResponse = matchingFlights.stream()
                 .map(flightList -> flightList.stream()
                         .map(flight -> new FlightResponse(flight))

@@ -16,25 +16,18 @@ import java.util.List;
 public class BoardingPassController {
     private final BoardingPassService boardingPassService;
 
-
     public BoardingPassController(BoardingPassService boardingPassService) {
         this.boardingPassService = boardingPassService;
     }
 
     @Transactional
     @PostMapping("/booking/flight/{flightId}")/*/{numberOfPassengers}*/
-    ResponseEntity<List<BoardingPassResponse>> postBookingBoardingPass(@PathVariable Long flightId, @RequestBody final BoardingPassBookingRequest boardingPassBookingRequest){//final List<Passenger> passengers) {
+    ResponseEntity<List<BoardingPassResponse>> postBookingBoardingPass(@PathVariable Long flightId, @RequestBody final BoardingPassBookingRequest boardingPassBookingRequest) {//final List<Passenger> passengers) {
 //        if (!flightDataRepository.existsById(flightId)) {
 //            return ResponseEntity.notFound().build();
 //        }
         List<BoardingPassResponse> boardingPassList = boardingPassService.generateBoardingPassesForAllPassengers(boardingPassBookingRequest, flightId);
-        //if ((boardingPassDataList) != null) {
-            return ResponseEntity.ok(boardingPassList);
-
-//        } else {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).build();//.body("No seats available. Please try booking a different flight");
-//
-//        }
+        return ResponseEntity.ok(boardingPassList);
     }
 //        Flight flight= flightRepository.findById(id).get();
 //        FlightState flightState = new FlightState(flightRepository, flight);

@@ -60,7 +60,7 @@ public class AirportReader {
         return new AirportData(name,location,iataCode,country,latitude,longitude);
     }
     public void saveAirportsDataFromList() {
-        List<AirportData> airportData = readAirportFromFile("C:\\Users\\Sylwia\\Downloads\\GlobalAirportDatabase\\GlobalAirportDatabase.txt");
+        List<AirportData> airportData = readAirportFromFile("/home/sylvia/Downloads/GlobalAirportDatabase.txt");
         for (AirportData a : airportData) {
             airportDataRepository.save(a);
         }

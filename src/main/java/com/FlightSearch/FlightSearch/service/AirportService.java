@@ -5,6 +5,7 @@ import com.FlightSearch.FlightSearch.model.AirportRequest;
 import com.FlightSearch.FlightSearch.model.AirportResponse;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,20 +32,21 @@ public class AirportService {
         return airportExist;
     }
     public AirportResponse findAirportById(Integer airportId) {
-        Airport airport = sqlRepository.findById(airportId).get();
+        Airport airport = sqlRepository.findAirportById(airportId).get();
         AirportResponse result = new AirportResponse(airport);
         return result;
     }
+    @Transactional
     public AirportResponse executeAirportUpdate(int id, AirportRequest airportRequest) {
             Airport source = new Airport(airportRequest);
-         sqlRepository.findById(id).ifPresent(airport -> {
+         sqlRepository.findAirportById(id).ifPresent(airport -> {
              airport.updateAirport(source);
 //             source.setFlights(airport.getFlights());
 //            airport.updateAirport(createAirportUpdate(source));
 //            airport.setFlights(sqlRepository.findById(id).get().getFlights());
             sqlRepository.saveAirport(airport);
         });
-            AirportResponse updatedAirport = new AirportResponse(sqlRepository.findById(id).get());
+            AirportResponse updatedAirport = new AirportResponse(sqlRepository.findAirportById(id).get());
             return updatedAirport;
 //            if (airportRepository.findById(id).get().toString().equals(airportData.toString())){
 //                return updatedAirport;

@@ -41,4 +41,5 @@ public class Trip {
         this.returnDepartureDate = returnDepartureDate;
         this.numberOfPassengers = numberOfPassengers;
     }
+
 }
