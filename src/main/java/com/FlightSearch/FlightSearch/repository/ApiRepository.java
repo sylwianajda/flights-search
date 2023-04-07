@@ -1,6 +1,7 @@
 package com.FlightSearch.FlightSearch.repository;
 
 import com.FlightSearch.FlightSearch.repository.entities.*;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +11,7 @@ public interface ApiRepository {
     List<Airport> findAllAirports();
 
     List<Flight> findAllFlights();
+    Airport findAirportByName(String name);
 
 
     Optional<Airport> findAirportById(Integer id);
@@ -37,9 +39,15 @@ public interface ApiRepository {
 
     void deleteBoardingPassById(Long id);
 
-    void delete(BoardingPass boardingPass);
+    void deleteBoardingPass(BoardingPass boardingPass);
     void increaseSeatsAvailable(Long flightId);
     void decreaseSeatsAvailable(Long flightId);
     Integer getCurrentNumberOfSeatsAvailable(Long flightIdInteger);
+    void deleteFlightById(Long id);
+//    void deleteFlight(Flight flight);
+    List<Flight> findAllFlightsByArrivalDateOlderThanWeekBeforeNow(LocalDateTime weekBeforeNow);
+   /*?*/ void removeFlightDataFromAirportDataInFlightsList(Long flightId);
+    //List<Flight> findMatchWithStops(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers);
+    List<Flight> findFlightsByAirportId(Integer airportId);
 
 }

@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public interface FlightDataRepository extends JpaRepository<FlightData,Long> {
     List<FlightData> findAll();
+    List<FlightData> findFlightsByAirportDataId(Integer airportId);
 
     boolean existsById(Long id);
 
@@ -82,6 +83,34 @@ public interface FlightDataRepository extends JpaRepository<FlightData,Long> {
             where f.id =:id
             """)
     Integer getCurrentNumberOfSeatsAvailable(@Param("id") Long flightId);
+    @Query(value = """
+            from FlightData f
+            where f.arrivalDate < :weekBeforeNow
+            """)
+    List<FlightData> findAllFlightsByArrivalDateOlderThanWeekBeforeNow(@Param("weekBeforeNow") LocalDateTime weekBeforeNow);
+
+//    @Query(value = """
+//            from FlightData f
+//            where f.departureTo = :departureTo
+//            and f.arrivalTo = :returnArrivalTo
+//            and f.numberOfSeatsAvailable >= :numberOfPassengers
+//            and date(f.departureDate) = (
+//                select date(f2.departureDate)
+//                from FlightData f2
+//                where f2.departureTo = :returnDepartureTo
+//                and f2.arrivalTo = :returnArrivalTo
+//                and f2.departureDate > :returnDepartureDate
+//                and f2.numberOfSeatsAvailable >= :numberOfPassengers
+//                order by f2.departureDate ASC
+//                limit 1
+//            )
+//            """)
+//    List<FlightData> findMatchWithStops(@Param("departureTo") String departureTo, @Param("arrivalTo") String arrivalTo, @Param("departureDate") LocalDateTime departureDate, @Param("numberOfPassengers") int numberOfPassengers);
+
+
+
+
+    //void deleteFlight(FlightData flightData);
 
     //    @Query(value = "from Flight f where f.departureTo=:departureTo and f.arrivalTo=:arrivalTo and f.departureDate>=:departureDate order by f.departureDate ASC ")
 //    List<Flight> findMatchInOneDay(@Param("departureTo") String departureTo, @Param("arrivalTo") String arrivalTo, @Param("departureDate") LocalDateTime departureDate);

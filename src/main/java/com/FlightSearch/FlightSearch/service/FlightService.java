@@ -2,11 +2,16 @@ package com.FlightSearch.FlightSearch.service;
 
 import com.FlightSearch.FlightSearch.model.FlightResponse;
 import com.FlightSearch.FlightSearch.model.Trip;
+import com.FlightSearch.FlightSearch.repository.entities.Airport;
 import com.FlightSearch.FlightSearch.repository.entities.Flight;
 import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,9 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class FlightService {
     private SqlRepository sqlRepository;
+    private FlightDataRepository flightDataRepository;
 
-    public FlightService(SqlRepository sqlRepository) {
+    public FlightService(SqlRepository sqlRepository, FlightDataRepository flightDataRepository) {
         this.sqlRepository = sqlRepository;
+        this.flightDataRepository = flightDataRepository;
     }
 
     public Long addFlight(CreateFlightRequest flightRequest) {
@@ -59,6 +66,50 @@ public class FlightService {
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
         return matchingFlightsResponse;
+    }
+    public List<FlightResponse> makeFlightsResponseFromListOfFlights(List<Flight> matchingFlights) {
+        List<FlightResponse> matchingFlightsResponse = matchingFlights.stream()
+                .map(flight -> new FlightResponse(flight))
+                .collect(Collectors.toList());
+        return matchingFlightsResponse;
+    }
+
+
+@Transactional
+    public void deleteOldFlights() {
+        LocalDateTime weekBeforeNow = LocalDateTime.now().minus(1, ChronoUnit.WEEKS);
+        List<Flight> allFlightsByArrivalDateOlderThanWeekBeforeNow = sqlRepository.findAllFlightsByArrivalDateOlderThanWeekBeforeNow(weekBeforeNow);
+        for (Flight f:allFlightsByArrivalDateOlderThanWeekBeforeNow) {
+            sqlRepository.removeFlightDataFromAirportDataInFlightsList(f.getId());
+            //flightDataRepository.findById(f.getId()).get().getAirportData().getFlightsData().removeIf(flightData -> flightData.getId() == f.getId());
+            sqlRepository.deleteFlightById(f.getId());
+        }
+    }
+
+    public List<Flight> searchFlightsByAirportId(Integer airportId) {
+        //Integer airportId = sqlRepository.findByDepartureTo(trip.getDepartureTo()).get().getAirport().getId();
+        return sqlRepository.findFlightsByAirportId(airportId);
+
+    }
+
+    public List<FlightResponse> searchMatchingFlightsWithStops(Trip trip) {
+        List<Flight> matchingFlights = new ArrayList<>();
+
+        Integer airportStartId = sqlRepository.findAirportByName(trip.getDepartureTo()).getId();
+        List<Flight> flightsByAirportStartId = sqlRepository.findFlightsByAirportId(airportStartId);
+        for (Flight flight1: flightsByAirportStartId) {
+            Integer airportMiddleId = sqlRepository.findAirportByName(flight1.getArrivalTo()).getId();
+             sqlRepository.findFlightsByAirportId(airportMiddleId).stream()
+                    .filter(flight2 -> flight2.getArrivalTo().contains(trip.getArrivalTo()))
+                    .forEach(f -> {
+                                matchingFlights.add(flight1);
+                                matchingFlights.add(f);
+                            }
+                    );
+                            //matchingFlights::add);
+        }
+
+        return makeFlightsResponseFromListOfFlights(matchingFlights);
     }
 
 //    public FlightDto createFlightDto(Flight flight){

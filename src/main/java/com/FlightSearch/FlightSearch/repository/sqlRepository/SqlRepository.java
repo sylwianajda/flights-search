@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SqlRepository implements ApiRepository {
+
     private AirportDataRepository airportDataRepository;
     private FlightDataRepository flightDataRepository;
     private BoardingPassDataRepository boardingPassDataRepository;
@@ -36,6 +37,11 @@ public class SqlRepository implements ApiRepository {
                 .map(flightData -> new Flight(flightData))
                 .collect(Collectors.toList());
         return flights;
+    }
+
+    @Override
+    public Airport findAirportByName(String name) {
+        return new Airport(airportDataRepository.findByName(name));
     }
 
     @Override
@@ -66,7 +72,7 @@ public class SqlRepository implements ApiRepository {
     }
 
     @Override
-    public Optional<Flight> findByDepartureTo(String departureTo) {
+    public Optional<Flight>  findByDepartureTo(String departureTo) {
         Optional<Flight> flight = Optional.of(new Flight(flightDataRepository.findByDepartureTo(departureTo).get()));
         return flight;
     }
@@ -128,7 +134,7 @@ public class SqlRepository implements ApiRepository {
     }
 
     @Override
-    public void delete(BoardingPass boardingPass) {
+    public void deleteBoardingPass(BoardingPass boardingPass) {
         //final BoardingPassData boardingPassData = new BoardingPassData(boardingPass);
         boardingPassDataRepository.delete(boardingPassDataRepository.getReferenceById(boardingPass.getBoardingPassId()));
     }
@@ -146,5 +152,44 @@ public class SqlRepository implements ApiRepository {
     @Override
     public Integer getCurrentNumberOfSeatsAvailable(Long flightId) {
         return flightDataRepository.getCurrentNumberOfSeatsAvailable(flightId);
+    }
+
+//    @Override
+//    public void deleteFlight(Flight flight) {
+//        flightDataRepository.deleteFlight(new FlightData(flight));
+//    }
+
+    @Override
+    public List<Flight> findAllFlightsByArrivalDateOlderThanWeekBeforeNow(LocalDateTime weekBeforeNow) {
+        List<Flight> flights = flightDataRepository.findAllFlightsByArrivalDateOlderThanWeekBeforeNow(weekBeforeNow).stream()
+                .map(flightData -> new Flight(flightData))
+                .collect(Collectors.toList());
+        return flights;
+    }
+
+    @Override
+    public void removeFlightDataFromAirportDataInFlightsList(Long flightId) {
+        flightDataRepository.findById(flightId)
+                .ifPresent(flightData -> flightData.getAirportData().getFlightsData()
+                        .removeIf(flightData1 -> flightData1.getId() == flightId));
+    }
+
+//    @Override
+//    public List<Flight> findMatchWithStops(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers) {
+//        List<Flight> flights = flightDataRepository.findMatchWithStops(departureTo, arrivalTo, departureDate, numberOfPassengers).stream()
+//                .map(flightData -> new Flight(flightData))
+//                .collect(Collectors.toList());
+//        return flights;
+//    }
+
+    @Override
+    public List<Flight> findFlightsByAirportId(Integer airportId) {
+        return flightDataRepository.findFlightsByAirportDataId(airportId).stream().map(flightData -> new Flight(flightData))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteFlightById(Long id) {
+        flightDataRepository.deleteById(id);
     }
 }

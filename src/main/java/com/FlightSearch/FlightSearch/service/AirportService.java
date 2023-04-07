@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 @Service
 public class AirportService {
     private SqlRepository sqlRepository;
-
-
     public AirportService(SqlRepository sqlRepository) {
         this.sqlRepository = sqlRepository;
     }

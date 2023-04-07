@@ -3,9 +3,12 @@ package com.FlightSearch.FlightSearch.controller;
 import com.FlightSearch.FlightSearch.model.FlightResponse;
 import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.model.Trip;
+import com.FlightSearch.FlightSearch.repository.entities.BoardingPass;
+import com.FlightSearch.FlightSearch.repository.entities.Flight;
 import com.FlightSearch.FlightSearch.service.FlightService;
 import org.json.JSONObject;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,6 +17,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 
 @RestController
 @RequestMapping("/flight")
@@ -61,6 +66,37 @@ public class FlightController {
         ResponseEntity<String> response = restTemplate.exchange("http://localhost:8084/getFlight", HttpMethod.POST, entity, String.class);
         return response.getBody();
     }
+    @Scheduled(fixedDelay = 1140,initialDelay = 1,timeUnit = TimeUnit.MINUTES )
+    @DeleteMapping("/deleteOldFlight")
+    void deleteFlightOlderThanWeek() {
+        flightService.deleteOldFlights();
+    }
+    @GetMapping("/matchWithStops")
+    ResponseEntity<List<FlightResponse>> getMatchingFlightsWithStops(@RequestBody @Valid final Trip trip) {
+
+        if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
+        List<FlightResponse> matchingFlightsResponse = flightService.searchMatchingFlightsWithStops(trip);
+        return ResponseEntity.ok(matchingFlightsResponse);
+    }
+
+    @GetMapping("/getFlightsByAirportId/{airportId}")
+    ResponseEntity<List<Flight>> getFlightsByAirportId(@PathVariable final Integer airportId) {
+
+//        if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
+//            return ResponseEntity.unprocessableEntity().build();
+//        }
+//        if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
+//            return ResponseEntity.unprocessableEntity().build();
+//        }
+        List<Flight> matchingFlights = flightService.searchFlightsByAirportId(airportId);
+        return ResponseEntity.ok(matchingFlights);
+    }
+
 //    ResponseEntity<List<List<FlightData>>> getMatchingFlights(@RequestBody @Valid Trip trip) {
 //        List<List<FlightData>> matchingFlights = new ArrayList<>();
 //        if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {

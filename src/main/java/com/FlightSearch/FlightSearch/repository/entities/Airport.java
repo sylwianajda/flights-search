@@ -21,6 +21,15 @@ public class Airport {
     private String country;
     private Double latitude;
     private Double longitude;
+
+    public Airport(String name, String location, String iataCode, String country, Double latitude, Double longitude) {
+        this.name = name;
+        this.location = location;
+        this.iataCode = iataCode;
+        this.country = country;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 //    private List<Flight> flights;
 
 

@@ -11,25 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
 public class BoardingPassService {
     private SqlRepository sqlRepository;
 
     public BoardingPassService(SqlRepository sqlRepository) {
         this.sqlRepository = sqlRepository;
     }
-
+    @Transactional
     public List<BoardingPassResponse> generateBoardingPassesForAllPassengers(BoardingPassBookingRequest boardingPassBookingRequest, Long flightId) {
         Flight flight = sqlRepository.findFlightById(flightId).get();
-        List<BoardingPass> listOfBoardingPassesFromRequest = getListOfBoardingPassesFromBoardingPassBookingRequest(boardingPassBookingRequest, flight);
+        List<BoardingPass> listOfBoardingPassesFromRequestForAllPassengers = getListOfBoardingPassesFromBoardingPassBookingRequest(boardingPassBookingRequest, flight);
         List<BoardingPassResponse> boardingPassesResponse = new ArrayList<>();
         Integer numberOfSeatsAvailable = sqlRepository.getCurrentNumberOfSeatsAvailable(flightId);
 
-        if (numberOfSeatsAvailable >= listOfBoardingPassesFromRequest.size()) {
-            listOfBoardingPassesFromRequest.forEach(boardingPass -> {
-                Long boardingPassDataId = sqlRepository.saveBoardingPass(boardingPass).getBoardingPassId();
+        if (numberOfSeatsAvailable >= listOfBoardingPassesFromRequestForAllPassengers.size()) {
+            listOfBoardingPassesFromRequestForAllPassengers.forEach(boardingPass -> {
+                Long savedBoardingPassDataId = sqlRepository.saveBoardingPass(boardingPass).getBoardingPassId();
                  sqlRepository.decreaseSeatsAvailable(flightId);
-                BoardingPassResponse boardingPassResponse = makeBoardingPassResponseFromBoardingPass(boardingPassDataId);
+                BoardingPassResponse boardingPassResponse = makeBoardingPassResponseFromBoardingPass(savedBoardingPassDataId);
                 boardingPassesResponse.add(boardingPassResponse);
             });
             return boardingPassesResponse;
