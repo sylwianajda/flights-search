@@ -60,47 +60,8 @@ public class BoardingPassService {
         Long flightId = boardingPass.getFlight().getId();
         sqlRepository.deleteBoardingPassById(boardingPassId);
         sqlRepository.increaseSeatsAvailable(flightId);
-
-//            BoardingPassData boardingPass1 = boardingPassDataRepository.findById(boardingPassId).get();
-//
-//            Long flightId = boardingPass1.getFlightData().getId();
-
-//            sqlRepository.findBoardingPassById(boardingPassId)
-//                    .ifPresent(boardingPass -> sqlRepository.delete(boardingPass));
-
-        //BoardingPassData boardingPass = boardingPassDataRepository.findById(boardingPassId).get();
-        // boardingPass1.getFlightData().getBoardingPassData().removeIf(bp -> boardingPassId.equals(bp.getBoardingPassId()));
-        //boardingPassDataRepository.deleteById(boardingPassId);
-
-        //Poprawna wersja Raf
-        //BoardingPassData boardingPass1 = boardingPassDataRepository.findById(boardingPassId).get();
-        // boardingPass1.getFlightData().getBoardingPassData().removeIf(bp -> boardingPassId.equals(bp.getBoardingPassId()));
-        //boardingPassDataRepository.deleteById(boardingPassId);
-
-//            BoardingPass boardingPass2 = sqlRepository.findBoardingPassById(boardingPassId).get();
-//            boardingPass2.getFlight().get.removeIf(bp -> boardingPassId.equals(bp.getBoardingPassId()));
-//            boardingPassDataRepository.deleteById(boardingPassId);
-
-
-        //Long flightId = boardingPass1.getFlight().getId();
-        //Long flightId = sqlRepository.findBoardingPassById(boardingPassId).get().getFlight().getId();
-//        sqlRepository.findBoardingPassById(boardingPassId).ifPresent(boardingPass1 ->
-//                sqlRepository.deleteBoardingPassById(boardingPassId));
-
-//            Flight flight = sqlRepository.findById(flightId).get();
-//            FlightState flightState = new FlightState(sqlRepository, flight);
-//            flightState.nextAvailableSeat();
     }
 
-//    public void deleteBoardingPass(Long boardingPassId) {
-//        Long flightId = boardingPassDataRepository.findById(id).get().getFlightData().getId();
-//        boardingPassDataRepository.findById(id).ifPresent(boardingPass ->
-//                boardingPassDataRepository.deleteById(id));
-////        Long flightId = boardingPassRepository.findById(id).ifPresent(boardingPass ->
-////                boardingPass.get().getFlight().getId());
-//        FlightData flightData = flightDataRepository.findById(flightId).get();
-//        FlightState flightState = new FlightState(flightDataRepository, flightData);
-//        flightState.nextAvailableSeat();
-//    }
+
 
 }

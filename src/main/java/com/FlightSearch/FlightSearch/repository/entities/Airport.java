@@ -66,7 +66,7 @@ public class Airport {
         this.country = airportRequest.getCountry();
         this.latitude = airportRequest.getLatitude();
         this.longitude = airportRequest.getLongitude();
-        //this.flights = new ArrayList<>();
+
     }
     public void updateAirport(Airport preparedAirportToUpdate) {
                 name = preparedAirportToUpdate.name;
@@ -75,7 +75,7 @@ public class Airport {
                 country = preparedAirportToUpdate.country;
                 latitude = preparedAirportToUpdate.latitude;
                 longitude =preparedAirportToUpdate.longitude;
-                //flights = new ArrayList<>();
+
     }
 
 
@@ -89,29 +89,9 @@ public class Airport {
                 airportRequest.getCountry(),
                 airportRequest.getLatitude(),
                 airportRequest.getLongitude()
-                //null
+
         );
 
     }
 
-
-//    public static Airport from(AirportData airportData) {
-//        return new Airport(
-//                airportData.getId(),
-//                airportData.getName(),
-//                airportData.getLocation(),
-//                airportData.getIataCode(),
-//                airportData.getCountry(),
-//                airportData.getLatitude(),
-//                airportData.getLongitude(),
-//                convertFlightsDataToFlights(airportData.getFlightsData())
-//        );
-//    }
-//
-//    private static List<Flight> convertFlightsDataToFlights(List<FlightData> flightsData) {
-//        List<Flight> flights = flightsData.stream()
-//                .map(flightData-> new Flight(flightData))
-//                .collect(Collectors.toList());
-//        return flights;
-//    }
 }

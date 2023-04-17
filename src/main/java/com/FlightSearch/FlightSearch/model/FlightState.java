@@ -45,10 +45,4 @@ public class FlightState {
                 });
     }
 
-    public boolean availableSeatsIsFinished() {
-        if (currentNumberOfSeatsAvailable == 0) {
-            return true;
-        }
-        return false;
-    }
 }

@@ -27,8 +27,6 @@ public class BoardingPassData {
         private long boardingPassId;
         private String firstName;
         private String lastName;
-//        @Embedded
-//        private FlightDto flightDto = new FlightDto(flightflight.getId());
         @JsonIgnore
         @ManyToOne(fetch = FetchType.EAGER )
         @Cascade(MERGE)
@@ -57,17 +55,3 @@ public class BoardingPassData {
         }
 }
 
-//        @Id
-//        @GeneratedValue(strategy = GenerationType.IDENTITY)
-//        @Column(name = "id", nullable = false)
-//        private long boardingPassId;
-//        private long flightNumber;
-//        //private int seatNumber;
-//        private String firstName;
-//        private String lastName;
-//        private LocalDateTime departDate;
-//        private Time gateClosedTime;
-//        //private LocalDateTime bookingTime;
-//        private FlightDto flight;
-//
-//}

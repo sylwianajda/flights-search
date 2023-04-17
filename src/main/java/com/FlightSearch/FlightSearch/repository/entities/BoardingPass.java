@@ -32,16 +32,6 @@ public class BoardingPass {
 
     }
 
-//    public List<BoardingPass> getListOfBoardingPasses(BoardingPassBookingRequest boardingPassBookingRequest, ) {
-//        List<BoardingPass> boardingPasses = new ArrayList<>();
-//        List<Passenger> passengers = boardingPassBookingRequest.getPassengers();
-//
-//        for (Passenger passenger : passengers) {
-//            BoardingPass boardingPass = new BoardingPass(passenger);
-//            boardingPasses.add(boardingPass);
-//        }
-//        return boardingPasses;
-//    }
     public BoardingPass(String firstName, String lastName, Flight flight) {
         this.firstName = firstName;
         this.lastName = lastName;

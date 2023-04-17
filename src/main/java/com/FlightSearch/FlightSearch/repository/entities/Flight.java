@@ -33,11 +33,9 @@ public class Flight {
 
     private Airport airport;
 
-    //private List<BoardingPass> boardingPass;
 
     public Flight() {
     }
-
 
 
     public Flight(FlightData flightData) {
@@ -50,9 +48,6 @@ public class Flight {
         this.price = flightData.getPrice();
         this.numberOfSeatsAvailable = flightData.getNumberOfSeatsAvailable();
         this.airport = new Airport(flightData.getAirportData());
-//        this.boardingPass = flightData.getBoardingPassData().stream()
-//                .map(BoardingPass::new)
-//                .collect(Collectors.toList());
     }
 
 
@@ -65,25 +60,9 @@ public class Flight {
         this.arrivalDate = flightRequest.getArrivalDate();
         this.price = flightRequest.getPrice();
         this.numberOfSeatsAvailable = flightRequest.getNumberOfSeatsAvailable();
-        this.airport = null;//sqlrepository.finById(flightRequest.getAirportId());
-        //this.boardingPass = new ArrayList<>();
+        this.airport = null;
     }
 
-
-//    public Flight from(FlightData flightData){
-//        this.id = flightData.getId();
-//        this.flightNumber = flightData.getFlightNumber();
-//        this.departureTo = flightData.getDepartureTo();
-//        this.arrivalTo = flightData.getArrivalTo();
-//        this.departureDate = flightData.getDepartureDate();
-//        this.arrivalDate = flightData.getArrivalDate();
-//        this.price = flightData.getPrice();
-//        this.numberOfSeatsAvailable = flightData.getNumberOfSeatsAvailable();
-//        this.airport = new Airport(flightData.getAirportData());
-//        this.boardingPass = flightData.getBoardingPassData().stream()
-//                .map(boardingPassData-> new BoardingPass(boardingPassData))
-//                .collect(Collectors.toList());
-//    }
     public String toString() {
         return "Flight{" +
                 "flightNumber='" + flightNumber + '\'' +

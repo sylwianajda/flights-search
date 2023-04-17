@@ -41,9 +41,7 @@ public class FlightData {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "airport_id")
     private AirportData airportData;
-//    @JsonIgnore
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "flightData", orphanRemoval=true)
-//    private List<BoardingPassData> boardingPassData;
+
 
     public FlightData(long id, String flightNumber, String departureTo, String arrivalTo,
                       LocalDateTime departureDate, LocalDateTime arrivalDate, BigDecimal price,
@@ -69,26 +67,13 @@ public class FlightData {
         this.price = flight.getPrice();
         this.numberOfSeatsAvailable = flight.getNumberOfSeatsAvailable();
         this.airportData = new AirportData(flight.getAirport());
-        //this.boardingPassData = new ArrayList<>();
-//                flight.getBoardingPass().stream()
-//                .map(boardingPass-> new BoardingPassData(boardingPass))
-//                .collect(Collectors.toList());
+
     }
 
     public long getId() {
+
         return id;
     }
 
-    /*public static FlightData from(Flight flight) {
-        return new FlightData(
-                flight.getFlightNumber(),
-                flight.getDepartureTo(),
-                flight.getArrivalTo(),
-                flight.getDepartureDate(),
-                flight.getArrivalDate(),
-                flight.getPrice(),
-                flight.getNumberOfSeatsAvailable(),
-                flight.getAirport()
-        );
-    }*/
+
 }

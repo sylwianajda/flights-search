@@ -18,8 +18,6 @@ public class AirportService {
     }
     public List<AirportResponse> findAirportByDepartureFrom(String location) {
         List<Airport> airports= sqlRepository.findByLocation(location);
-        //AirportData airportData = airportDataRepository.findByLocation(location);
-        //AirportResponse result = AirportResponse.from(Airport.from(airportData));
         List<AirportResponse> result = airports.stream()
                 .map(airport -> new AirportResponse(airport))
                 .collect(Collectors.toList());
@@ -34,23 +32,19 @@ public class AirportService {
         AirportResponse result = new AirportResponse(airport);
         return result;
     }
+    public Airport searchFlightsByName(String name) {
+        return sqlRepository.findAirportByName(name);
+    }
     @Transactional
     public AirportResponse executeAirportUpdate(int id, AirportRequest airportRequest) {
             Airport source = new Airport(airportRequest);
          sqlRepository.findAirportById(id).ifPresent(airport -> {
              airport.updateAirport(source);
-//             source.setFlights(airport.getFlights());
-//            airport.updateAirport(createAirportUpdate(source));
-//            airport.setFlights(sqlRepository.findById(id).get().getFlights());
+
             sqlRepository.saveAirport(airport);
         });
             AirportResponse updatedAirport = new AirportResponse(sqlRepository.findAirportById(id).get());
             return updatedAirport;
-//            if (airportRepository.findById(id).get().toString().equals(airportData.toString())){
-//                return updatedAirport;
-//            } else {
-//                return null;
-//            }
     }
     public Airport createAirportUpdate(Airport source) {
         return new Airport(
@@ -61,7 +55,6 @@ public class AirportService {
                 source.getCountry(),
                 source.getLatitude(),
                 source.getLongitude());
-                //source.getFlights());
 
     }
 

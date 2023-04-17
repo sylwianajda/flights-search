@@ -32,15 +32,4 @@ public class AirportResponse {
 
     }
 
-//    public static AirportResponse from(Airport airport) {
-//        return new AirportResponse(
-//                airport.getId(),
-//                airport.getName(),
-//                airport.getLocation(),
-//                airport.getIataCode(),
-//                airport.getCountry(),
-//                airport.getLatitude(),
-//                airport.getLatitude()
-//        );
-//    }
 }

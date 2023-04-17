@@ -5,16 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-
 @AllArgsConstructor
 @Getter
 @Setter
-public class BoardingPassBookingRequest {
+public class MergeFlightResponse {
+    List<List<FlightResponse>> flights;
 
-    public BoardingPassBookingRequest() {
-
-    }
-
-    private List<Passenger> passengers;
-
+    List<List<FlightResponse>> returnFlights;
 }

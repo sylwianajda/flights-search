@@ -28,6 +28,4 @@ public class AirportRequest {
     private Double longitude;
 
 
-
-
 }

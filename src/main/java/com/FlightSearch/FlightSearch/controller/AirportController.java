@@ -27,20 +27,17 @@ public class AirportController {
     }
 
     @GetMapping("searchByIataCode")
-    public boolean checkAirportExistsFromIataCode(@RequestParam(required = true)@NotEmpty String iataCode) {
+    public boolean checkAirportExistsFromIataCode(@RequestParam(required = true) @NotEmpty String iataCode) {
         return airportService.findExistingAirportByIataCode(iataCode);
     }
 
     @GetMapping("searchByLocation")
-    public List<AirportResponse> searchAirportByLocation(@RequestParam(required = true) String location) {
-        return airportService.findAirportByDepartureFrom(location);
+    public AirportResponse searchAirportByName(@RequestParam(required = true) String name) {
+        return new AirportResponse(airportService.searchFlightsByName(name));
     }
 
     @GetMapping("searchById/{id}")
     public ResponseEntity<AirportResponse> searchAirportById(@PathVariable Integer id) {
-//        if (!airportRepository.existsById(airportId)) {
-//            return ResponseEntity.notFound().build();
-//        }
         return ResponseEntity.ok(airportService.findAirportById(id));
     }
 
@@ -50,7 +47,6 @@ public class AirportController {
         return "Airports have been added";
     }
 
-    @Transactional
     @PutMapping("/updateAirport/{id}")
     public ResponseEntity<AirportResponse> updateAirport(@PathVariable int id, @Valid @RequestBody AirportRequest source) {
         AirportResponse airportUpdated = airportService.executeAirportUpdate(id, source);
@@ -59,12 +55,6 @@ public class AirportController {
         } else {
             return ResponseEntity.notFound().build();
         }
-//               if (!airportRepository.existsById(id)) {
-//            return ResponseEntity.notFound().build();
-//        } else {
-//            airportServices.updaterAirport(id, source);
-//        }
-//            return ResponseEntity.noContent().build();
     }
 
 }

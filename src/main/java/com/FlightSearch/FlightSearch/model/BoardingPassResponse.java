@@ -16,7 +16,6 @@ public class BoardingPassResponse {
 
     public BoardingPassResponse() {
     }
-
     private Flight flight;
 
     public BoardingPassResponse(BoardingPass boardingPass) {

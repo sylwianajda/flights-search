@@ -14,13 +14,11 @@ public class IllegalExceptionsControllerAdvice {
     @ExceptionHandler({NoSuchElementException.class})
     ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e){
         return ResponseEntity.notFound().build();
-        //return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
     ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e){
         String message = "No seats available. Please try booking a different flight";
         return new ResponseEntity<String>(message, HttpStatus.CONFLICT);
-        //return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
