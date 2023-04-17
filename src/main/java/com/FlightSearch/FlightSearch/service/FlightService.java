@@ -13,8 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
 
 @Service
 public class FlightService {
@@ -92,24 +95,31 @@ public class FlightService {
 
     }
 
-    public List<FlightResponse> searchMatchingFlightsWithStops(Trip trip) {
-        List<Flight> matchingFlights = new ArrayList<>();
+    public List<List<FlightResponse>> searchMatchingFlightsWithStops(Trip trip) {
+        List<List<Flight>> matchingFlights = new ArrayList<>();
+        //List<Flight> joinedFlights = new ArrayList<>();
 
         Integer airportStartId = sqlRepository.findAirportByName(trip.getDepartureTo()).getId();
-        List<Flight> flightsByAirportStartId = sqlRepository.findFlightsByAirportId(airportStartId);
+        List<Flight> flightsByAirportStartId = sqlRepository.findFlightsByAirportId(airportStartId).stream()
+                .filter(flight -> flight.getDepartureDate().isAfter(trip.getDepartureDate())).toList();
         for (Flight flight1: flightsByAirportStartId) {
             Integer airportMiddleId = sqlRepository.findAirportByName(flight1.getArrivalTo()).getId();
              sqlRepository.findFlightsByAirportId(airportMiddleId).stream()
-                    .filter(flight2 -> flight2.getArrivalTo().contains(trip.getArrivalTo()))
+                    .filter(flight2 -> flight2.getArrivalTo().contains(trip.getArrivalTo())
+                            && flight2.getDepartureDate().isAfter(flight1.getArrivalDate().plusHours(2L))
+                            && flight2.getDepartureDate().isBefore(flight1.getArrivalDate().plusDays(1L))).toList()
                     .forEach(f -> {
-                                matchingFlights.add(flight1);
-                                matchingFlights.add(f);
+                        List<Flight> joinedFlights = new ArrayList<>();
+                            joinedFlights.add(flight1);
+                            joinedFlights.add(f);
+                            matchingFlights.add(joinedFlights);
                             }
                     );
-                            //matchingFlights::add);
         }
+        //matchingFlights.add(joinedFlights);
+        //matchingFlights.stream().sorted(Comparator.comparing(flight -> flight.))
 
-        return makeFlightsResponseFromListOfFlights(matchingFlights);
+        return makeFlightsResponseFromFlights(matchingFlights);
     }
 
 //    public FlightDto createFlightDto(Flight flight){

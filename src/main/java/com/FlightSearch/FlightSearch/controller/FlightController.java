@@ -71,8 +71,8 @@ public class FlightController {
     void deleteFlightOlderThanWeek() {
         flightService.deleteOldFlights();
     }
-    @GetMapping("/matchWithStops")
-    ResponseEntity<List<FlightResponse>> getMatchingFlightsWithStops(@RequestBody @Valid final Trip trip) {
+    @GetMapping("/matchWithStops") // TODO:kodifhyg
+    ResponseEntity<List<List<FlightResponse>>> getMatchingFlightsWithStops(@RequestBody @Valid final Trip trip) {
 
         if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
             return ResponseEntity.unprocessableEntity().build();
@@ -80,7 +80,7 @@ public class FlightController {
         if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
             return ResponseEntity.unprocessableEntity().build();
         }
-        List<FlightResponse> matchingFlightsResponse = flightService.searchMatchingFlightsWithStops(trip);
+        List<List<FlightResponse>> matchingFlightsResponse = flightService.searchMatchingFlightsWithStops(trip);
         return ResponseEntity.ok(matchingFlightsResponse);
     }
 
