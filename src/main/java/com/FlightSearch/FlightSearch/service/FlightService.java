@@ -2,8 +2,10 @@ package com.FlightSearch.FlightSearch.service;
 
 import com.FlightSearch.FlightSearch.model.FlightResponse;
 import com.FlightSearch.FlightSearch.model.Trip;
+import com.FlightSearch.FlightSearch.repository.entities.Airport;
 import com.FlightSearch.FlightSearch.repository.entities.Flight;
 import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.FlightDataRepository;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,17 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
 
 @Service
 public class FlightService {
     private SqlRepository sqlRepository;
-    private FlightChecker flightChecker;
 
-    public FlightService(SqlRepository sqlRepository, FlightChecker flightChecker) {
+    public FlightService(SqlRepository sqlRepository) {
         this.sqlRepository = sqlRepository;
-        this.flightChecker = flightChecker;
     }
     @Transactional
     public Long addFlight(CreateFlightRequest flightRequest) {
@@ -112,10 +115,9 @@ public class FlightService {
         List<Flight> returnFlightsByAirportStartId = sqlRepository.findFlightsByAirportId(returnAirportStartId).stream()
                 .filter(flight -> flight.getDepartureDate().isAfter(returnDepartureDate)).toList();
         for (Flight flight1: returnFlightsByAirportStartId) {
-            Integer returnAirportMiddleId = sqlRepository.findAirportByName(flight1.getArrivalTo()).getId();
-            sqlRepository.findFlightsByAirportId(returnAirportMiddleId).stream()
+            Integer airportMiddleId = sqlRepository.findAirportByName(flight1.getArrivalTo()).getId();
+            sqlRepository.findFlightsByAirportId(airportMiddleId).stream()
                     .filter(flight2 -> flight2.getArrivalTo().contains(returnArrivalTo)
-//
                             && flight2.getDepartureDate().isAfter(flight1.getArrivalDate().plusHours(2L))
                             && flight2.getDepartureDate().isBefore(flight1.getArrivalDate().plusDays(1L))).toList()
                     .forEach(f -> {
@@ -130,66 +132,6 @@ public class FlightService {
         return makeFlightsResponseFromFlights(returnMatchingFlights);
     }
 
-    public List<String> searchConnections(Trip trip) {
-        List<Flight> directFlightsToDestination = sqlRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
-        List<Flight> directReturnFlights = sqlRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(), trip.getNumberOfPassengers());
 
-        List<List<Flight>> flightsWithStopsToDestination = findMatchingFlightsWithStops(trip);
-        List<Flight> flightsToGraph = flightsWithStopsToDestination.stream().flatMap(List::stream).collect(Collectors.toList());
-        flightsToGraph.addAll(directFlightsToDestination);
-        List<List<Flight>> ReturnFlightsWithStopsToDestination = findReturnMatchingFlightsWithStops(trip);
 
-        List<String> shortestPath = flightChecker.findShortestPath(trip.getDepartureTo(), trip.getArrivalTo(), flightsToGraph);
-        return shortestPath;
-    }
-
-    public  List<List<Flight>> findMatchingFlightsWithStops(Trip trip) {
-        List<List<Flight>> matchingFlights = new ArrayList<>();
-
-        Integer airportStartId = sqlRepository.findAirportByName(trip.getDepartureTo()).getId();
-        List<Flight> flightsByAirportStartId = sqlRepository.findFlightsByAirportId(airportStartId).stream()
-                .filter(flight -> flight.getDepartureDate().isAfter(trip.getDepartureDate())).toList();
-        for (Flight flight1 : flightsByAirportStartId) {
-            Integer airportMiddleId = sqlRepository.findAirportByName(flight1.getArrivalTo()).getId();
-            sqlRepository.findFlightsByAirportId(airportMiddleId).stream()
-                    .filter(flight2 -> flight2.getArrivalTo().contains(trip.getArrivalTo())
-                            && flight2.getDepartureDate().isAfter(flight1.getArrivalDate().plusHours(2L))
-                            && flight2.getDepartureDate().isBefore(flight1.getArrivalDate().plusDays(1L))).toList()
-                    .forEach(f -> {
-                                List<Flight> joinedFlights = new ArrayList<>();
-                                joinedFlights.add(flight1);
-                                joinedFlights.add(f);
-                                matchingFlights.add(joinedFlights);
-                            }
-                    );
-        }
-        return matchingFlights;
-    }
-
-    public  List<List<Flight>> findReturnMatchingFlightsWithStops(Trip trip) {
-        List<List<Flight>> returnMatchingFlights = new ArrayList<>();
-        LocalDateTime returnDepartureDate = trip.getReturnDepartureDate();
-        String returnDepartureTo = trip.getArrivalTo();
-        String returnArrivalTo = trip.getDepartureTo();
-
-        Integer returnAirportStartId = sqlRepository.findAirportByName(returnDepartureTo).getId();
-        List<Flight> returnFlightsByAirportStartId = sqlRepository.findFlightsByAirportId(returnAirportStartId).stream()
-                .filter(flight -> flight.getDepartureDate().isAfter(returnDepartureDate)).toList();
-        for (Flight flight1 : returnFlightsByAirportStartId) {
-            Integer returnAirportMiddleId = sqlRepository.findAirportByName(flight1.getArrivalTo()).getId();
-            sqlRepository.findFlightsByAirportId(returnAirportMiddleId).stream()
-                    .filter(flight2 -> flight2.getArrivalTo().contains(returnArrivalTo)
-                            && flight2.getDepartureDate().isAfter(flight1.getArrivalDate().plusHours(2L))
-                            && flight2.getDepartureDate().isBefore(flight1.getArrivalDate().plusDays(1L))).toList()
-                    .forEach(f -> {
-                                List<Flight> joinedFlights = new ArrayList<>();
-                                joinedFlights.add(flight1);
-                                joinedFlights.add(f);
-                                returnMatchingFlights.add(joinedFlights);
-                            }
-                    );
-        }
-
-        return returnMatchingFlights;
-    }
 }
