@@ -95,6 +95,6 @@ public class FlightController {
             return ResponseEntity.unprocessableEntity().build();
         }
 
-      return ResponseEntity.ok(flightService.searchConnections(trip));
+    return ResponseEntity.ok(flightService.searchConnections(trip));
     }
 }

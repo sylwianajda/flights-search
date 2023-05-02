@@ -19,21 +19,25 @@ public class FlightChecker {
             }
 
             // Initialize distance and previous node maps
-            Map<String, Integer> distance = new HashMap<>();
+            Map<String, Double> distance = new HashMap<>();
             Map<String, String> previous = new HashMap<>();
+            Set<String> visited = new HashSet<>();
+
             for (String airport : graph.keySet()) {
-                distance.put(airport, Integer.MAX_VALUE);
-                previous.put(airport, null);
+                distance.put(airport, Double.MAX_VALUE);
+                //previous.put(airport, null);
             }
-            distance.put(start, 0);
+            //????
+            distance.put(start, 0.0);
 
             // Initialize priority queue
-            PriorityQueue<String> queue = new PriorityQueue<>(Comparator.comparingInt(distance::get));
+            PriorityQueue<String> queue = new PriorityQueue<>(Comparator.comparingDouble(key -> distance.get(key)));
             queue.add(start);
 
             // Dijkstra's algorithm
             while (!queue.isEmpty()) {
-                String current = queue.remove();
+                String current = queue.poll();//.remove();
+                visited.add(current);
                 if (current.equals(end)) {
                     break;
                 }
@@ -41,7 +45,7 @@ public class FlightChecker {
                     continue;
                 }
                 for (Flight flight : graph.get(current)) {
-                    int newDistance = distance.get(current) + flight.getPrice().intValue();
+                    Double newDistance = distance.get(current) + flight.getPrice().doubleValue();
                     if (newDistance < distance.get(flight.getArrivalTo())) {
                         distance.put(flight.getArrivalTo(), newDistance);
                         previous.put(flight.getArrivalTo(), current);

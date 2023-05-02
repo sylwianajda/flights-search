@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  api:
+    build: ./
+    ports:
+      - 8083:8083
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/flightssearch?autoReconnect=true&useSSL=true
+    depends_on:
+      - mysqldb
+  mysqldb:
+    image: mysql
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=test123
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=test123
+      - MYSQL_DATABASE=flightssearch
+    ports:
+      - 3307:3306
+
+#version: "3.9"
+#services:
+#  api:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+#    ports:
+#      - 8083:8083
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3307/flightssearch
+#    depends_on:
+#      - mysqldb
+#  mysqldb:
+#    image: mysql
+#    container_name: mysql
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=test123
+#      - MYSQL_USER=sylvia
+#      - MYSQL_PASSWORD=test123
+#      - MYSQL_DATABASE=flightssearch
+#    ports:
+#      - 3307:3306
