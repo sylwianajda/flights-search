@@ -2,17 +2,20 @@ package com.FlightSearch.FlightSearch.service;
 
 import com.FlightSearch.FlightSearch.model.FlightResponse;
 import com.FlightSearch.FlightSearch.model.Trip;
+import com.FlightSearch.FlightSearch.model.WeightFlightsPath;
 import com.FlightSearch.FlightSearch.repository.entities.Flight;
 import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class FlightService {
@@ -135,12 +138,56 @@ public class FlightService {
         List<Flight> directReturnFlights = sqlRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(), trip.getNumberOfPassengers());
 
         List<List<Flight>> flightsWithStopsToDestination = findMatchingFlightsWithStops(trip);
-        List<Flight> flightsToGraph = flightsWithStopsToDestination.stream().flatMap(List::stream).collect(Collectors.toList());
-        flightsToGraph.addAll(directFlightsToDestination);
         List<List<Flight>> ReturnFlightsWithStopsToDestination = findReturnMatchingFlightsWithStops(trip);
 
+        List<Flight> flightsToGraph = flightsWithStopsToDestination.stream().flatMap(List::stream).collect(Collectors.toList());
+        flightsToGraph.addAll(directFlightsToDestination);
+
+
+        List<WeightFlightsPath> costOfFlightsWithStops = new ArrayList<>();
+        List<WeightFlightsPath> costOfDirectFlights = new ArrayList<>();
+
+        flightsWithStopsToDestination.stream().forEach(
+                flights -> {
+
+                    for (int i = 0; i < flights.size(); i++) {
+                        List<Long> joinedIds = new ArrayList<>();
+                        List<BigDecimal> joinedPrices = new ArrayList<>();
+                        flights.stream().forEach(flight -> {
+                            joinedPrices.add(flight.getPrice());
+                            joinedIds.add(flight.getId());
+                        });
+
+                        if (flights.size() - 1 == i) {
+                            int sumedPrices = 0;
+                            for (BigDecimal price : joinedPrices) {
+                                sumedPrices += price.intValue();
+                            }
+                            BigDecimal sumedPricesInBD = new BigDecimal(sumedPrices);
+                            WeightFlightsPath weightFlightsPath = new WeightFlightsPath(joinedIds, sumedPricesInBD);
+                            costOfFlightsWithStops.add(weightFlightsPath);
+                        }
+                    }
+                }
+        );
+
+        directFlightsToDestination.stream().forEach(
+                flight -> {
+                    List<Long> ids = new ArrayList<>();
+                        ids.add(flight.getId());
+                        BigDecimal price= flight.getPrice();
+                        WeightFlightsPath weightFlightsPath = new WeightFlightsPath(ids, price);
+                        costOfDirectFlights.add(weightFlightsPath);
+                }
+        );
+
+        List<WeightFlightsPath> costOfFlights = Stream.concat(costOfDirectFlights.stream(), costOfFlightsWithStops.stream()).toList();
+
+
         List<String> shortestPath = flightChecker.findShortestPath(trip.getDepartureTo(), trip.getArrivalTo(), flightsToGraph);
-        return shortestPath;
+
+        List<String> shortestPathUla = flightChecker.findShortestPathUla(trip.getDepartureTo(), trip.getArrivalTo(), costOfFlights);
+        return shortestPathUla;
     }
 
     public  List<List<Flight>> findMatchingFlightsWithStops(Trip trip) {
