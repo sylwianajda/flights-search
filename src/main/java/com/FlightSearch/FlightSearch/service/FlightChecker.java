@@ -6,7 +6,7 @@ import es.usc.citius.hipster.algorithm.Algorithm;
 import es.usc.citius.hipster.algorithm.Hipster;
 import es.usc.citius.hipster.graph.GraphSearchProblem;
 import es.usc.citius.hipster.graph.HashBasedHipsterDirectedGraph;
-import es.usc.citius.hipster.model.Node;
+import es.usc.citius.hipster.model.impl.WeightedNode;
 import es.usc.citius.hipster.model.problem.SearchProblem;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class FlightChecker {
 
             // Create the search problem. For graph problems, just use
             // the GraphSearchProblem util class to generate the problem with ease.
-            SearchProblem p = GraphSearchProblem
+            SearchProblem<BigDecimal, String, WeightedNode<BigDecimal, String, Double>> p = GraphSearchProblem
                     .startingFrom(start)
                     .in(graph)
                     .takeCostsFromEdges()
@@ -36,34 +36,28 @@ public class FlightChecker {
 
             // Search the shortest path from "start" to "end"
             //System.out.println(Hipster.createDijkstra(p).search(end));
-            Algorithm.SearchResult search = Hipster.createDijkstra(p).search(end);
-            String node = "WROCŁAW";
-            recoverActionPath(node);
+            Algorithm<BigDecimal, String, WeightedNode<BigDecimal, String, Double>>.SearchResult search = Hipster.createDijkstra(p).search(end);
             System.out.println(search);
             return null;
         }
 
-    private void recoverActionPath(String node) {
-    }
 
-    public static <BigDecimal, String extends Node<BigDecimal,?, String>>  List<BigDecimal> recoverActionPath(String node){
-        List<BigDecimal> actions = new LinkedList<BigDecimal>();
-        for(String n : node.path()){
-            if (n.action() != null) actions.add(n.action());
-        }
-        return actions;
-    }
 
-    public List<String> findShortestPathUla(String start, String end, List<WeightFlightsPath> ula) {
+
+
+    public List<String> findShortestPathUla(String start, String end, List<WeightFlightsPath> costOfFlights) {
+
 
         // Create a simple weighted directed graph with Hipster where
         // vertices are Strings and edge values are just doubles
         HashBasedHipsterDirectedGraph<String, BigDecimal> graph = HashBasedHipsterDirectedGraph.create();
-        for (WeightFlightsPath weightFlightsPath : ula) {
+        for (WeightFlightsPath weightFlightsPath : costOfFlights) {
             graph.add(start);
             graph.add(end);
             graph.connect(start, end, weightFlightsPath.getSumOfPrices());
+
         }
+
 
         // Create the search problem. For graph problems, just use
         // the GraphSearchProblem util class to generate the problem with ease.
@@ -76,6 +70,9 @@ public class FlightChecker {
         // Search the shortest path from "start" to "end"
         //System.out.println(Hipster.createDijkstra(p).search(end));
         Algorithm.SearchResult search = Hipster.createDijkstra(p).search(end);
+
+
+
         System.out.println(search);
         return null;
     }

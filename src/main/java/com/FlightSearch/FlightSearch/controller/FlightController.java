@@ -86,7 +86,7 @@ public class FlightController {
     }
 
     @GetMapping("/match")
-    ResponseEntity<List<String>> getMatchingFlights(@RequestBody @Valid final Trip trip) {
+    ResponseEntity <List<String>> getMatchingFlights(@RequestBody @Valid final Trip trip) {
 
         if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
             return ResponseEntity.unprocessableEntity().build();
@@ -94,7 +94,7 @@ public class FlightController {
         if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
             return ResponseEntity.unprocessableEntity().build();
         }
-
-    return ResponseEntity.ok(flightService.searchConnections(trip));
+        flightService.searchConnections(trip);
+    return null;//ResponseEntity.ok(flightService.searchConnections(trip));
     }
 }

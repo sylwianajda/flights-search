@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,10 +20,12 @@ import java.util.stream.Stream;
 public class FlightService {
     private SqlRepository sqlRepository;
     private FlightChecker flightChecker;
+    private DijkstraService dijkstraService;
 
-    public FlightService(SqlRepository sqlRepository, FlightChecker flightChecker) {
+    public FlightService(SqlRepository sqlRepository, FlightChecker flightChecker, DijkstraService dijkstraService) {
         this.sqlRepository = sqlRepository;
         this.flightChecker = flightChecker;
+        this.dijkstraService = dijkstraService;
     }
     @Transactional
     public Long addFlight(CreateFlightRequest flightRequest) {
@@ -133,7 +134,7 @@ public class FlightService {
         return makeFlightsResponseFromFlights(returnMatchingFlights);
     }
 
-    public List<String> searchConnections(Trip trip) {
+    public void/*List<String>*/ searchConnections(Trip trip) {
         List<Flight> directFlightsToDestination = sqlRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
         List<Flight> directReturnFlights = sqlRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(), trip.getNumberOfPassengers());
 
@@ -187,7 +188,27 @@ public class FlightService {
         List<String> shortestPath = flightChecker.findShortestPath(trip.getDepartureTo(), trip.getArrivalTo(), flightsToGraph);
 
         List<String> shortestPathUla = flightChecker.findShortestPathUla(trip.getDepartureTo(), trip.getArrivalTo(), costOfFlights);
-        return shortestPathUla;
+        sortingListOfCostOfFlights(costOfFlights);
+
+
+        //useDijkstra(trip.getDepartureTo(), trip.getArrivalTo(), costOfFlights);
+        //return shortestPathUla;
+    }
+
+    private static List<WeightFlightsPath> sortingListOfCostOfFlights(List<WeightFlightsPath> costOfFlights) {
+        WeightFlightsPath[] arrayOfWeightFlightsPath = new WeightFlightsPath[costOfFlights.size()];
+        for (int i = 0; i < costOfFlights.size(); i++) {
+            WeightFlightsPath flight = costOfFlights.get(i);
+            arrayOfWeightFlightsPath[i] = flight;
+        }
+        Arrays.sort(arrayOfWeightFlightsPath
+                //Comparator.comparing(weightFlightsPath -> weightFlightsPath.getSumOfPrices())
+        );
+        List<WeightFlightsPath> sortedList = Arrays.asList(arrayOfWeightFlightsPath);
+
+
+
+        return sortedList;
     }
 
     public  List<List<Flight>> findMatchingFlightsWithStops(Trip trip) {
@@ -239,4 +260,76 @@ public class FlightService {
 
         return returnMatchingFlights;
     }
+
+    public void useDijkstra(String start, String end, List<WeightFlightsPath> costOfFlights) {
+//        int countOfVertex= costOfFlights.size();
+//        List<DijkstraService.Graph.Edge> edges = new ArrayList<>();
+//        for (int i = 0; i < countOfVertex; i++) {
+//            DijkstraService.Graph.Edge edge = new DijkstraService.Graph.Edge(start, end, costOfFlights.get(i).getSumOfPrices().intValue());
+//            edges.add(edge);
+//        }
+//      //  DijkstraService.Graph.Edge[] GRAPH =  new DijkstraService.Graph.Edge[countOfVertex];
+//        DijkstraService.Graph.Edge[] ALA = edges.toArray(new DijkstraService.Graph.Edge[0]);
+//
+//        System.out.println(ALA);// edges.toArray(ALA);
+//
+        DijkstraService.Graph.Edge[] edges = new DijkstraService.Graph.Edge[costOfFlights.size()]; // create an array of edges
+
+// loop through the flights and create an edge for each one
+        for (int i = 0; i < costOfFlights.size(); i++) {
+            WeightFlightsPath flight = costOfFlights.get(i);
+            edges[i] = new DijkstraService.Graph.Edge(start, end, flight.getSumOfPrices().intValue(),flight.getIds());
+        }
+
+ //create a new Graph object using the array of edges
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //DijkstraService.Graph.Edge edge = new DijkstraService.Graph.Edge(start, end, costOfFlights.get(i).getSumOfPrices().intValue());
+        //(WeightFlightsPath weightFlightsPath : costOfFlights) {
+
+//        for (DijkstraService.Graph.Edge edge: GRAPH) {
+//            for (int i = 0; i < GRAPH.length; i++){
+//            edge = new DijkstraService.Graph.Edge(start, end, costOfFlights.get(i).getSumOfPrices().intValue());
+//            }
+//
+//        }
+//        for (int i = 0; i < GRAPH.length; i++)
+//            GRAPH[i] = new DijkstraService.Graph.Edge(start, end, costOfFlights.get(i).getSumOfPrices().intValue());
+
+//        for (int i = 0; i < GRAPH.length; i++) {
+//            System.out.println("GRAPH[" + i + "] = " + GRAPH[i]);
+//
+//        }
+
+//         final DijkstraService.Graph.Edge[] GRAPH = {
+//                new DijkstraService.Graph.Edge("a", "b", 7),
+//                new DijkstraService.Graph.Edge("a", "b", 9),
+//                new DijkstraService.Graph.Edge("a", "b", 14),
+//                new DijkstraService.Graph.Edge("a", "b", 10),
+//                new DijkstraService.Graph.Edge("a", "b", 15),
+//                new DijkstraService.Graph.Edge("a", "b", 11),
+//                new DijkstraService.Graph.Edge("a", "b", 2),
+//                new DijkstraService.Graph.Edge("a", "b", 6),
+//                new DijkstraService.Graph.Edge("a", "b", 12),
+//        };
+        //new DijkstraService.Graph.Edge[countOfVertex];
+        DijkstraService.Graph g = new DijkstraService.Graph(edges);
+        System.out.println(g);
+        g.dijkstra(start);
+        g.printPath(end);
+        g.printAllPaths();
+
+    }
+
 }

@@ -21,11 +21,11 @@ public class AirportController {
     private final AirportService airportService;
     private final AirportReader airportReader;
 
-    public AirportController(AirportService airportService, AirportReader airportReader, AirportDataRepository airportDataRepository) {
+    public AirportController(AirportService airportService, AirportReader airportReader) {
         this.airportService = airportService;
         this.airportReader = airportReader;
     }
-
+//do wyrzucenia
     @GetMapping("searchByIataCode")
     public boolean checkAirportExistsFromIataCode(@RequestParam(required = true) @NotEmpty String iataCode) {
         return airportService.findExistingAirportByIataCode(iataCode);

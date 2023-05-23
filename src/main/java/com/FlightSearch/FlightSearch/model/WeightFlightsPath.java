@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 @Getter
 @Setter
-public class WeightFlightsPath {
+public class WeightFlightsPath implements Comparable<WeightFlightsPath> {
     private List<Long> ids;
     private BigDecimal sumOfPrices;
 
@@ -17,4 +17,8 @@ public class WeightFlightsPath {
     }
 
 
+    @Override
+    public int compareTo(WeightFlightsPath o) {
+        return this.sumOfPrices.compareTo(o.getSumOfPrices());
+    }
 }
