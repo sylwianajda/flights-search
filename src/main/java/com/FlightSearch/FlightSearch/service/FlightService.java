@@ -1,10 +1,12 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.FlightResponse;
-import com.FlightSearch.FlightSearch.model.Trip;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
-import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
+import com.FlightSearch.FlightSearch.controller.model.Trip;
+import com.FlightSearch.FlightSearch.externalService.ExternalApiService;
+import com.FlightSearch.FlightSearch.service.model.Flight;
+import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +18,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class FlightService {
+    private ExternalApiService externalApiService;
     private SqlRepository sqlRepository;
     private FlightChecker flightChecker;
 
-    public FlightService(SqlRepository sqlRepository, FlightChecker flightChecker) {
+    public FlightService(ExternalApiService externalApiService, SqlRepository sqlRepository, FlightChecker flightChecker) {
+        this.externalApiService = externalApiService;
         this.sqlRepository = sqlRepository;
         this.flightChecker = flightChecker;
     }
@@ -191,5 +195,8 @@ public class FlightService {
         }
 
         return returnMatchingFlights;
+    }
+    public ResponseEntity<String> getFlightFromExternalApi(Trip trip){
+        return externalApiService.connectToExternalApi(trip);
     }
 }

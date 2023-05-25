@@ -1,5 +1,6 @@
 package com.FlightSearch.FlightSearch.repository.entities;
 
+import com.FlightSearch.FlightSearch.service.model.BoardingPass;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,11 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 import static org.hibernate.annotations.CascadeType.MERGE;
-import static org.hibernate.annotations.CascadeType.PERSIST;
 
 @Entity
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package com.FlightSearch.FlightSearch.model;
+package com.FlightSearch.FlightSearch.controller.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @Getter
 @Setter

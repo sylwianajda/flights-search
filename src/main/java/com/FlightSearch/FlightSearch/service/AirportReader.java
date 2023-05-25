@@ -1,10 +1,9 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.repository.entities.Airport;
-import com.FlightSearch.FlightSearch.repository.entities.AirportData;
-import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataRepository;
+import com.FlightSearch.FlightSearch.service.model.Airport;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,10 +61,16 @@ public class AirportReader {
 
         return new Airport(name,location,iataCode,country,latitude,longitude);
     }
-    public void saveAirportsDataFromList() {
-        List<Airport> airports = readAirportFromFile("/home/sylvia/Downloads/GlobalAirportDatabase.txt");
-        for (Airport a : airports) {
-            sqlRepository.saveAirport(a);
+    @Transactional
+    public boolean saveAirportsDataFromList() {
+        List<Airport> airports = readAirportFromFile("/homesylvia/Downloads/GlobalAirportDatabase.txt");
+        try {
+            for (Airport a : airports) {
+                sqlRepository.saveAirport(a);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

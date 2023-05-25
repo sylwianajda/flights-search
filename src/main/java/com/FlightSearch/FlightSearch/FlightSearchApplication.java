@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
-@EnableTransactionManagement
 public class FlightSearchApplication {
 
 	public static void main(String[] args) {

@@ -1,7 +1,8 @@
 package com.FlightSearch.FlightSearch.repository;
 
-import com.FlightSearch.FlightSearch.repository.entities.*;
-import org.springframework.data.repository.query.Param;
+import com.FlightSearch.FlightSearch.service.model.Airport;
+import com.FlightSearch.FlightSearch.service.model.BoardingPass;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,8 +28,6 @@ public interface ApiRepository {
     Optional<Flight> findFlightById(Long id);
 
     Flight saveFlight(Flight entity);
-
-    //List<Flight> findAllByAirportId(Integer id);
 
     List<Flight> findMatch(String departureTo, String arrivalTo, LocalDateTime departureDate, int numberOfPassengers);
 

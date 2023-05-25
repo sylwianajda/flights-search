@@ -1,9 +1,8 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.parser.Parser;
 import java.util.*;
 @Service
 public class FlightChecker {

@@ -1,13 +1,10 @@
-package com.FlightSearch.FlightSearch.model;
+package com.FlightSearch.FlightSearch.controller.model;
 
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter

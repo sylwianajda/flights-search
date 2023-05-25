@@ -1,21 +1,11 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.repository.entities.Airport;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class AirportReaderTest {

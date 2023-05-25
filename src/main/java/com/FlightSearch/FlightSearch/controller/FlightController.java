@@ -1,9 +1,9 @@
 package com.FlightSearch.FlightSearch.controller;
 
-import com.FlightSearch.FlightSearch.model.FlightResponse;
-import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
-import com.FlightSearch.FlightSearch.model.Trip;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
+import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.controller.model.Trip;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.service.FlightService;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -51,12 +51,8 @@ public class FlightController {
         if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
             return ResponseEntity.unprocessableEntity().build();
         }
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-API-Key", "109353c6-6432-4acf-8e77-ef842f64a664");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Trip> entity = new HttpEntity<>(trip, headers);
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:8084/getFlight", HttpMethod.POST, entity, String.class);
+
+       ResponseEntity<String> response = flightService.getFlightFromExternalApi(trip);
         return response.getBody();
     }
 

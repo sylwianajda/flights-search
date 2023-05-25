@@ -1,8 +1,8 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
-import com.FlightSearch.FlightSearch.repository.entities.Airport;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.service.model.Airport;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
