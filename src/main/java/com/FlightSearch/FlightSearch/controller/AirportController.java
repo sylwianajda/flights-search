@@ -24,7 +24,15 @@ public class AirportController {
         this.airportService = airportService;
         this.airportReader = airportReader;
     }
+    @GetMapping("searchByIataCode")
+    public ResponseEntity<String> checkAirportExistsFromIataCode(@RequestParam(required = true) @NotEmpty String iataCode) {
+        boolean isExistingAirportByIataCode = airportService.findExistingAirportByIataCode(iataCode);
+        if (isExistingAirportByIataCode!=true){
+            return ResponseEntity.status(404).body("Airport doesn't exist");
+        }
+        return ResponseEntity.status(200).body("Airport exist");
 
+    }
     @GetMapping("searchByLocation")
     public  ResponseEntity<AirportResponse> searchAirportByName(@RequestParam(required = true) String name) {
         try {
