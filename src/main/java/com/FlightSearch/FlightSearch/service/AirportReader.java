@@ -63,7 +63,7 @@ public class AirportReader {
     }
     @Transactional
     public boolean saveAirportsDataFromList() {
-        List<Airport> airports = readAirportFromFile("/homesylvia/Downloads/GlobalAirportDatabase.txt");
+        List<Airport> airports = readAirportFromFile("/home/sylvia/Downloads/GlobalAirportDatabase.txt");
         try {
             for (Airport a : airports) {
                 sqlRepository.saveAirport(a);

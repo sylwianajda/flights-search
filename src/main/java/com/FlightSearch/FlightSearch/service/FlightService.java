@@ -2,7 +2,7 @@ package com.FlightSearch.FlightSearch.service;
 
 import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
 import com.FlightSearch.FlightSearch.controller.model.Trip;
-import com.FlightSearch.FlightSearch.externalService.ExternalApiService;
+import com.FlightSearch.FlightSearch.externalService.ExternalApiClient;
 import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class FlightService {
-    private ExternalApiService externalApiService;
+    private ExternalApiClient externalApiService;
     private SqlRepository sqlRepository;
     private FlightChecker flightChecker;
 
-    public FlightService(ExternalApiService externalApiService, SqlRepository sqlRepository, FlightChecker flightChecker) {
+    public FlightService(ExternalApiClient externalApiService, SqlRepository sqlRepository, FlightChecker flightChecker) {
         this.externalApiService = externalApiService;
         this.sqlRepository = sqlRepository;
         this.flightChecker = flightChecker;

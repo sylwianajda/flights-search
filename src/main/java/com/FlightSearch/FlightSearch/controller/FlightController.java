@@ -8,7 +8,6 @@ import com.FlightSearch.FlightSearch.service.FlightService;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -33,42 +32,40 @@ public class FlightController {
 
     @GetMapping("/matchWithoutStops")
     ResponseEntity<List<List<FlightResponse>>> getMatchingFlightsWithoutStops(@RequestBody @Valid final Trip trip) {
-
-        if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
-            return ResponseEntity.unprocessableEntity().build();
-        }
-        if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
+        boolean validationResponse = getValidation(trip);
+        if (validationResponse != true) {
             return ResponseEntity.unprocessableEntity().build();
         }
         List<List<FlightResponse>> matchingFlightsResponse = flightService.searchMatchingFlights(trip);
         return ResponseEntity.ok(matchingFlightsResponse);
     }
-    @PostMapping("/getFlighFromExternalAPI")
-    public Object getFlightFromExternalAPI(@RequestBody @Valid final Trip trip){
+
+
+    private static boolean getValidation(Trip trip) {
         if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
-            return ResponseEntity.unprocessableEntity().build();
+            return false;
         }
         if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
+            return false;
+        }
+        return true;
+    }
+
+    @PostMapping("/getFlighFromExternalAPI")
+    public Object getFlightFromExternalAPI(@RequestBody @Valid final Trip trip) {
+        boolean validationResponse = getValidation(trip);
+        if (validationResponse != true) {
             return ResponseEntity.unprocessableEntity().build();
         }
-
-       ResponseEntity<String> response = flightService.getFlightFromExternalApi(trip);
+        ResponseEntity<String> response = flightService.getFlightFromExternalApi(trip);
         return response.getBody();
     }
 
-    @Scheduled(fixedDelay = 1140,initialDelay = 1,timeUnit = TimeUnit.MINUTES )
-    @DeleteMapping("/deleteOldFlight")
-    void deleteFlightOlderThanWeek() {
-        flightService.deleteOldFlights();
-    }
 
     @GetMapping("/matchWithStops") // TODO:xxx
     ResponseEntity<List<List<FlightResponse>>> getMatchingFlightsWithStops(@RequestBody @Valid final Trip trip) {
-
-        if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
-            return ResponseEntity.unprocessableEntity().build();
-        }
-        if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
+        boolean validationResponse = getValidation(trip);
+        if (validationResponse != true) {
             return ResponseEntity.unprocessableEntity().build();
         }
         List<List<FlightResponse>> matchingFlightsResponse = flightService.searchMatchingFlightsWithStops(trip);
@@ -83,14 +80,10 @@ public class FlightController {
 
     @GetMapping("/match")
     ResponseEntity<List<String>> getMatchingFlights(@RequestBody @Valid final Trip trip) {
-
-        if (trip.isReturnTrip() && trip.getReturnDepartureDate() == null) {
+        boolean validationResponse = getValidation(trip);
+        if (validationResponse != true) {
             return ResponseEntity.unprocessableEntity().build();
         }
-        if (!trip.isReturnTrip() && trip.getReturnDepartureDate() != null) {
-            return ResponseEntity.unprocessableEntity().build();
-        }
-
       return ResponseEntity.ok(flightService.searchConnections(trip));
     }
 }

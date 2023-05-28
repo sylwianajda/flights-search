@@ -1,5 +1,6 @@
 package com.FlightSearch.FlightSearch.service;
 
+import com.FlightSearch.FlightSearch.controller.exceptions.NonAvailableSeatsException;
 import com.FlightSearch.FlightSearch.controller.model.BoardingPassBookingRequest;
 import com.FlightSearch.FlightSearch.controller.model.BoardingPassResponse;
 import com.FlightSearch.FlightSearch.controller.model.Passenger;
@@ -35,12 +36,15 @@ public class BoardingPassService {
             });
             return boardingPassesResponse;
         } else {
-            throw new IllegalArgumentException(); //ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
+            try {
+                throw new NonAvailableSeatsException();
+            } catch (NonAvailableSeatsException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     public BoardingPassResponse makeBoardingPassResponseFromBoardingPass(Long boardingPassId){
-        BoardingPass boardingPass = sqlRepository.findBoardingPassById(boardingPassId).get();
-        return new BoardingPassResponse(boardingPass);
+        return new BoardingPassResponse(sqlRepository.findBoardingPassById(boardingPassId).get());
     }
 
     public List<BoardingPass> getListOfBoardingPassesFromBoardingPassBookingRequest(BoardingPassBookingRequest boardingPassBookingRequest, Flight flight) {
@@ -52,11 +56,7 @@ public class BoardingPassService {
             boardingPasses.add(boardingPass);
         }
         );
-//        for (Passenger passenger : passengers) {
-//            BoardingPass boardingPass = new BoardingPass(passenger);
-//            boardingPass.setFlight(flight);
-//            boardingPasses.add(boardingPass);
-//        }
+
         return boardingPasses;
     }
 

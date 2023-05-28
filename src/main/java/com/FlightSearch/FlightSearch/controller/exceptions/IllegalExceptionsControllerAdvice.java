@@ -16,9 +16,14 @@ public class IllegalExceptionsControllerAdvice {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
-    ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e){
+    @ExceptionHandler({NonAvailableSeatsException.class})
+    ResponseEntity<String> handleNonAvailableSeatsException(NonAvailableSeatsException e){
         String message = "No seats available. Please try booking a different flight";
         return new ResponseEntity<String>(message, HttpStatus.CONFLICT);
     }
+//    @ExceptionHandler({IllegalArgumentException.class})
+//    ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e){
+//        String message = "No seats available. Please try booking a different flight";
+//        return new ResponseEntity<String>(message, HttpStatus.CONFLICT);
+//    }
 }
