@@ -1,8 +1,8 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.repository.entities.Airport;
-import com.FlightSearch.FlightSearch.model.AirportRequest;
-import com.FlightSearch.FlightSearch.model.AirportResponse;
+import com.FlightSearch.FlightSearch.service.model.Airport;
+import com.FlightSearch.FlightSearch.controller.model.AirportRequest;
+import com.FlightSearch.FlightSearch.controller.model.AirportResponse;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,17 +46,5 @@ public class AirportService {
             AirportResponse updatedAirport = new AirportResponse(sqlRepository.findAirportById(id).get());
             return updatedAirport;
     }
-    public Airport createAirportUpdate(Airport source) {
-        return new Airport(
-                source.getId(),
-                source.getLocation(),
-                source.getLocation(),
-                source.getIataCode(),
-                source.getCountry(),
-                source.getLatitude(),
-                source.getLongitude());
-
-    }
-
 
 }

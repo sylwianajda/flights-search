@@ -1,10 +1,10 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
-import com.FlightSearch.FlightSearch.model.FlightResponse;
-import com.FlightSearch.FlightSearch.model.Trip;
-import com.FlightSearch.FlightSearch.repository.entities.Airport;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
+import com.FlightSearch.FlightSearch.controller.model.Trip;
+import com.FlightSearch.FlightSearch.service.model.Airport;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;

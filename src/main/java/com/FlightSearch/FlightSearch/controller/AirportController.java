@@ -1,18 +1,16 @@
 package com.FlightSearch.FlightSearch.controller;
 
 import com.FlightSearch.FlightSearch.controller.exceptions.IllegalExceptionProcessing;
-import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataRepository;
-import com.FlightSearch.FlightSearch.model.AirportRequest;
-import com.FlightSearch.FlightSearch.model.AirportResponse;
+import com.FlightSearch.FlightSearch.controller.model.AirportRequest;
+import com.FlightSearch.FlightSearch.controller.model.AirportResponse;
 import com.FlightSearch.FlightSearch.service.AirportReader;
 import com.FlightSearch.FlightSearch.service.AirportService;
+import com.FlightSearch.FlightSearch.service.model.Airport;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import java.util.List;
 
 @RestController
 @IllegalExceptionProcessing
@@ -25,15 +23,26 @@ public class AirportController {
         this.airportService = airportService;
         this.airportReader = airportReader;
     }
-//do wyrzucenia
-    @GetMapping("searchByIataCode")
-    public boolean checkAirportExistsFromIataCode(@RequestParam(required = true) @NotEmpty String iataCode) {
-        return airportService.findExistingAirportByIataCode(iataCode);
-    }
 
+    @GetMapping("searchByIataCode")
+    public ResponseEntity<String> checkAirportExistsFromIataCode(@RequestParam(required = true) @NotEmpty String iataCode) {
+        boolean isExistingAirportByIataCode = airportService.findExistingAirportByIataCode(iataCode);
+        if (isExistingAirportByIataCode!=true){
+            return ResponseEntity.status(404).body("Airport doesn't exist");
+        }
+        return ResponseEntity.status(200).body("Airport exist");
+
+    }
     @GetMapping("searchByLocation")
-    public AirportResponse searchAirportByName(@RequestParam(required = true) String name) {
-        return new AirportResponse(airportService.searchFlightsByName(name));
+    public  ResponseEntity<AirportResponse> searchAirportByName(@RequestParam(required = true) String name) {
+        try {
+            Airport airport = airportService.searchFlightsByName(name);
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
+        Airport airport = airportService.searchFlightsByName(name);
+        AirportResponse airportResponse = new AirportResponse(airport);
+        return ResponseEntity.ok(airportResponse);
     }
 
     @GetMapping("searchById/{id}")
@@ -42,9 +51,12 @@ public class AirportController {
     }
 
     @GetMapping("/addAirports")
-    public String addAirports() {
-        airportReader.saveAirportsDataFromList();
-        return "Airports have been added";
+    public ResponseEntity<String> addAirports() {
+        boolean isSaved = airportReader.saveAirportsDataFromList();
+        if (isSaved!=true){
+            return ResponseEntity.status(500).body("Airports haven't been added");
+        }
+        return ResponseEntity.status(201).body("Airports have been added");
     }
 
     @PutMapping("/updateAirport/{id}")

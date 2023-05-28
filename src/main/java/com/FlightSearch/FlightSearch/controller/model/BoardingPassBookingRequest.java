@@ -1,4 +1,4 @@
-package com.FlightSearch.FlightSearch.model;
+package com.FlightSearch.FlightSearch.controller.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,10 @@ import java.util.List;
 @Setter
 public class BoardingPassBookingRequest {
 
+    private List<Passenger> passengers;
+
     public BoardingPassBookingRequest() {
 
     }
-
-    private List<Passenger> passengers;
 
 }

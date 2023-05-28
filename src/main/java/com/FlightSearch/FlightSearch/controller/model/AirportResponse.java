@@ -1,17 +1,14 @@
-package com.FlightSearch.FlightSearch.model;
+package com.FlightSearch.FlightSearch.controller.model;
 
-import com.FlightSearch.FlightSearch.repository.entities.Airport;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.service.model.Airport;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Getter
 @Setter
-public class AirportResponseWithFlights {
+public class AirportResponse {
     private int id;
     private String name;
     private String location;
@@ -20,7 +17,8 @@ public class AirportResponseWithFlights {
     private Double latitude;
     private Double longitude;
 
-    public AirportResponseWithFlights(Airport airport) {
+
+    public AirportResponse(Airport airport) {
         this.id = airport.getId();
         this.name = airport.getName();
         this.location = airport.getLocation();
@@ -29,7 +27,6 @@ public class AirportResponseWithFlights {
         this.latitude = airport.getLatitude();
         this.longitude = airport.getLongitude();
 
-
     }
-}
 
+}

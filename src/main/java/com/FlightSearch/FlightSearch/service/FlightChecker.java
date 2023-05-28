@@ -1,7 +1,6 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.WeightFlightsPath;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.service.model.WeightFlightsPath;
 import es.usc.citius.hipster.algorithm.Algorithm;
 import es.usc.citius.hipster.algorithm.Hipster;
 import es.usc.citius.hipster.graph.GraphSearchProblem;
@@ -9,9 +8,10 @@ import es.usc.citius.hipster.graph.HashBasedHipsterDirectedGraph;
 import es.usc.citius.hipster.model.impl.WeightedNode;
 import es.usc.citius.hipster.model.problem.SearchProblem;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import java.util.*;
+
 @Service
 public class FlightChecker {
 

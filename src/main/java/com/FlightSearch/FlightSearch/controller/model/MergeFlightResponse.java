@@ -1,5 +1,6 @@
-package com.FlightSearch.FlightSearch.model;
+package com.FlightSearch.FlightSearch.controller.model;
 
+import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

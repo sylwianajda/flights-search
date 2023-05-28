@@ -1,8 +1,11 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.*;
-import com.FlightSearch.FlightSearch.repository.entities.BoardingPass;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.controller.exceptions.NonAvailableSeatsException;
+import com.FlightSearch.FlightSearch.controller.model.BoardingPassBookingRequest;
+import com.FlightSearch.FlightSearch.controller.model.BoardingPassResponse;
+import com.FlightSearch.FlightSearch.controller.model.Passenger;
+import com.FlightSearch.FlightSearch.service.model.BoardingPass;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,24 +36,27 @@ public class BoardingPassService {
             });
             return boardingPassesResponse;
         } else {
-            throw new IllegalArgumentException(); //ResponseEntity.status(HttpStatus.CONFLICT).body("No seats available. Please try booking a different flight");
+            try {
+                throw new NonAvailableSeatsException();
+            } catch (NonAvailableSeatsException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     public BoardingPassResponse makeBoardingPassResponseFromBoardingPass(Long boardingPassId){
-        BoardingPass boardingPass = sqlRepository.findBoardingPassById(boardingPassId).get();
-        BoardingPassResponse boardingPassResponse = new BoardingPassResponse(boardingPass);
-        return boardingPassResponse;
+        return new BoardingPassResponse(sqlRepository.findBoardingPassById(boardingPassId).get());
     }
 
     public List<BoardingPass> getListOfBoardingPassesFromBoardingPassBookingRequest(BoardingPassBookingRequest boardingPassBookingRequest, Flight flight) {
         List<BoardingPass> boardingPasses = new ArrayList<>();
         List<Passenger> passengers = boardingPassBookingRequest.getPassengers();
-
-        for (Passenger passenger : passengers) {
+        passengers.stream().forEach(passenger -> {
             BoardingPass boardingPass = new BoardingPass(passenger);
             boardingPass.setFlight(flight);
             boardingPasses.add(boardingPass);
         }
+        );
+
         return boardingPasses;
     }
 

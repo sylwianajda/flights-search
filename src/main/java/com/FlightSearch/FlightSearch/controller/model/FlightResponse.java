@@ -1,7 +1,6 @@
-package com.FlightSearch.FlightSearch.model;
+package com.FlightSearch.FlightSearch.controller.model;
 
-import com.FlightSearch.FlightSearch.repository.entities.Airport;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,19 +13,12 @@ import java.time.LocalDateTime;
 @Setter
 public class FlightResponse {
     private long id;
-
     private String flightNumber;
-
     private String departureTo;
-
     private String arrivalTo;
-
     private LocalDateTime departureDate;
-
     private LocalDateTime arrivalDate;
-
     private BigDecimal price;
-
     private int numberOfSeatsAvailable;
     public FlightResponse(Flight flight) {
         this.id = flight.getId();

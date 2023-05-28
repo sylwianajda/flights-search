@@ -1,5 +1,6 @@
 package com.FlightSearch.FlightSearch.repository.entities;
 
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,9 +10,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor

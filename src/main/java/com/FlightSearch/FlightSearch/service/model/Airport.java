@@ -1,13 +1,10 @@
-package com.FlightSearch.FlightSearch.repository.entities;
+package com.FlightSearch.FlightSearch.service.model;
 
-import com.FlightSearch.FlightSearch.model.AirportRequest;
+import com.FlightSearch.FlightSearch.controller.model.AirportRequest;
+import com.FlightSearch.FlightSearch.repository.entities.AirportData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @AllArgsConstructor

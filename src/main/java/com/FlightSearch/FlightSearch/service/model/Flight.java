@@ -1,15 +1,14 @@
-package com.FlightSearch.FlightSearch.repository.entities;
+package com.FlightSearch.FlightSearch.service.model;
 
-import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.repository.entities.FlightData;
+import com.FlightSearch.FlightSearch.service.model.Airport;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter

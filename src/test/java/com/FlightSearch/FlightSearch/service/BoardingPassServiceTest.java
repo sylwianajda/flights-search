@@ -1,13 +1,12 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.BoardingPassBookingRequest;
-import com.FlightSearch.FlightSearch.model.BoardingPassResponse;
-import com.FlightSearch.FlightSearch.model.Passenger;
-import com.FlightSearch.FlightSearch.repository.entities.Airport;
-import com.FlightSearch.FlightSearch.repository.entities.BoardingPass;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
+import com.FlightSearch.FlightSearch.controller.model.BoardingPassBookingRequest;
+import com.FlightSearch.FlightSearch.controller.model.BoardingPassResponse;
+import com.FlightSearch.FlightSearch.controller.model.Passenger;
+import com.FlightSearch.FlightSearch.service.model.Airport;
+import com.FlightSearch.FlightSearch.service.model.BoardingPass;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

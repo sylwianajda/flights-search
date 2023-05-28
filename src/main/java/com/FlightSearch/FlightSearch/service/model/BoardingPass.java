@@ -1,17 +1,10 @@
-package com.FlightSearch.FlightSearch.repository.entities;
+package com.FlightSearch.FlightSearch.service.model;
 
-import com.FlightSearch.FlightSearch.model.BoardingPassBookingRequest;
-import com.FlightSearch.FlightSearch.model.Passenger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.FlightSearch.FlightSearch.controller.model.Passenger;
+import com.FlightSearch.FlightSearch.repository.entities.BoardingPassData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter

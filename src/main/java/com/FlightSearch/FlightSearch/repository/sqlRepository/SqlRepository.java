@@ -2,6 +2,9 @@ package com.FlightSearch.FlightSearch.repository.sqlRepository;
 
 import com.FlightSearch.FlightSearch.repository.entities.*;
 import com.FlightSearch.FlightSearch.repository.ApiRepository;
+import com.FlightSearch.FlightSearch.service.model.Airport;
+import com.FlightSearch.FlightSearch.service.model.BoardingPass;
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

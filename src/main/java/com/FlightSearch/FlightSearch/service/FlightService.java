@@ -1,11 +1,13 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.FlightResponse;
-import com.FlightSearch.FlightSearch.model.Trip;
-import com.FlightSearch.FlightSearch.model.WeightFlightsPath;
-import com.FlightSearch.FlightSearch.repository.entities.Flight;
-import com.FlightSearch.FlightSearch.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.service.model.WeightFlightsPath;
+import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
+import com.FlightSearch.FlightSearch.controller.model.Trip;
+import com.FlightSearch.FlightSearch.externalService.ExternalApiClient;
+import com.FlightSearch.FlightSearch.service.model.Flight;
+import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +20,14 @@ import java.util.stream.Stream;
 
 @Service
 public class FlightService {
+    private ExternalApiClient externalApiService;
     private SqlRepository sqlRepository;
     private FlightChecker flightChecker;
     private DijkstraService dijkstraService;
 
-    public FlightService(SqlRepository sqlRepository, FlightChecker flightChecker, DijkstraService dijkstraService) {
+
+    public FlightService(ExternalApiClient externalApiService, SqlRepository sqlRepository, FlightChecker flightChecker, DijkstraService dijkstraService) {
+        this.externalApiService = externalApiService;
         this.sqlRepository = sqlRepository;
         this.flightChecker = flightChecker;
         this.dijkstraService = dijkstraService;
@@ -261,6 +266,7 @@ public class FlightService {
         return returnMatchingFlights;
     }
 
+
     public void useDijkstra(String start, String end, List<WeightFlightsPath> costOfFlights) {
 //        int countOfVertex= costOfFlights.size();
 //        List<DijkstraService.Graph.Edge> edges = new ArrayList<>();
@@ -282,18 +288,6 @@ public class FlightService {
         }
 
  //create a new Graph object using the array of edges
-
-
-
-
-
-
-
-
-
-
-
-
 
         //DijkstraService.Graph.Edge edge = new DijkstraService.Graph.Edge(start, end, costOfFlights.get(i).getSumOfPrices().intValue());
         //(WeightFlightsPath weightFlightsPath : costOfFlights) {
@@ -330,6 +324,11 @@ public class FlightService {
         g.printPath(end);
         g.printAllPaths();
 
+    }
+
+
+    public ResponseEntity<String> getFlightFromExternalApi(Trip trip){
+        return externalApiService.connectToExternalApi(trip);
     }
 
 }
