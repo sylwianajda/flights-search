@@ -1,8 +1,9 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.Airport;
-import com.FlightSearch.FlightSearch.repository.AirportRepository;
+import com.FlightSearch.FlightSearch.service.model.Airport;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,16 +12,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class AirportReader {
-    private AirportRepository airportRepository;
+    private SqlRepository sqlRepository;
 
-    public AirportReader(AirportRepository airportRepository) {
-        this.airportRepository = airportRepository;
+    public AirportReader(SqlRepository sqlRepository) {
+        this.sqlRepository = sqlRepository;
     }
 
     public static List<Airport> readAirportFromFile(String filePath) {
@@ -47,6 +46,7 @@ public class AirportReader {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        airports.removeIf(airport -> airport.getLatitude() == 0d && airport.getLongitude() == 0d);
 
         return airports;
     }
@@ -61,10 +61,17 @@ public class AirportReader {
 
         return new Airport(name,location,iataCode,country,latitude,longitude);
     }
-    public void saveAirportsDataFromList() {
-        List<Airport> airports = readAirportFromFile("C:\\Users\\Sylwia\\Downloads\\GlobalAirportDatabase\\GlobalAirportDatabase.txt");
-        for (Airport a : airports) {
-            airportRepository.save(a);
+    @Transactional
+    public boolean saveAirportsDataFromList() {
+        List<Airport> airports = readAirportFromFile("/home/sylvia/Downloads/GlobalAirportDatabase.txt");
+        try {
+            for (Airport a : airports) {
+                sqlRepository.saveAirport(a);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }
+

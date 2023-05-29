@@ -1,5 +1,6 @@
-package com.FlightSearch.FlightSearch.model;
+package com.FlightSearch.FlightSearch.repository.entities;
 
+import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,17 +8,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "flights")
-public class Flight {
+public class FlightData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -37,15 +36,14 @@ public class Flight {
     @NotBlank
     private int numberOfSeatsAvailable;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "airport_id")
-    private Airport airport;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "flight", orphanRemoval=true)
-    private List<BoardingPass> boardingPasses;
+    private AirportData airportData;
 
-    public Flight(long id, String flightNumber, String departureTo, String arrivalTo,
-                  LocalDateTime departureDate, LocalDateTime arrivalDate, BigDecimal price,
-                  int numberOfSeatsAvailable, Airport airport) {
+
+    public FlightData(long id, String flightNumber, String departureTo, String arrivalTo,
+                      LocalDateTime departureDate, LocalDateTime arrivalDate, BigDecimal price,
+                      int numberOfSeatsAvailable, AirportData airportData) {
         this.id = id;
         this.flightNumber = flightNumber;
         this.departureTo = departureTo;
@@ -54,10 +52,26 @@ public class Flight {
         this.arrivalDate = arrivalDate;
         this.price = price;
         this.numberOfSeatsAvailable = numberOfSeatsAvailable;
-        this.airport = airport;
+        this.airportData = airportData;
+    }
+
+    public FlightData(Flight flight) {
+        this.id = flight.getId();
+        this.flightNumber = flight.getFlightNumber();
+        this.departureTo = flight.getDepartureTo();
+        this.arrivalTo = flight.getArrivalTo();
+        this.departureDate = flight.getDepartureDate();
+        this.arrivalDate = flight.getArrivalDate();
+        this.price = flight.getPrice();
+        this.numberOfSeatsAvailable = flight.getNumberOfSeatsAvailable();
+        this.airportData = new AirportData(flight.getAirport());
+
     }
 
     public long getId() {
+
         return id;
     }
+
+
 }
