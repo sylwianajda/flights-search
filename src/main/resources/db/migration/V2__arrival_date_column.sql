@@ -1,1 +1,1 @@
-alter table flightssearch.flights add arrival_date date;
+alter table flightssearch.flights add arrival_date datetime;

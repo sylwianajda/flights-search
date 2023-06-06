@@ -1,60 +1,72 @@
 package com.FlightSearch.FlightSearch.controller;
 
-import com.FlightSearch.FlightSearch.model.Airport;
-import com.FlightSearch.FlightSearch.repository.AirportRepository;
+import com.FlightSearch.FlightSearch.controller.exceptions.IllegalExceptionProcessing;
+import com.FlightSearch.FlightSearch.repository.sqlRepository.AirportDataRepository;
+import com.FlightSearch.FlightSearch.controller.model.AirportRequest;
+import com.FlightSearch.FlightSearch.controller.model.AirportResponse;
 import com.FlightSearch.FlightSearch.service.AirportReader;
-import com.FlightSearch.FlightSearch.service.AirportServices;
+import com.FlightSearch.FlightSearch.service.AirportService;
+import com.FlightSearch.FlightSearch.service.model.Airport;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.data.repository.util.ClassUtils.ifPresent;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 @RestController
+@IllegalExceptionProcessing
 @RequestMapping("/airport")
 public class AirportController {
-    private final AirportServices airportServices;
+    private final AirportService airportService;
     private final AirportReader airportReader;
-    private final AirportRepository airportRepository;
 
-    public AirportController(AirportServices airportServices, AirportReader airportReader, AirportRepository airportRepository) {
-        this.airportServices = airportServices;
+    public AirportController(AirportService airportService, AirportReader airportReader) {
+        this.airportService = airportService;
         this.airportReader = airportReader;
-        this.airportRepository = airportRepository;
     }
-
     @GetMapping("searchByIataCode")
-    public boolean checkAirportExistsFromIataCode(@RequestParam(required = true) String iataCode) {
-        return airportRepository.existsByIataCode(iataCode);
+    public ResponseEntity<String> checkAirportExistsFromIataCode(@RequestParam(required = true) @NotEmpty String iataCode) {
+        boolean isExistingAirportByIataCode = airportService.findExistingAirportByIataCode(iataCode);
+        if (isExistingAirportByIataCode!=true){
+            return ResponseEntity.status(404).body("Airport doesn't exist");
+        }
+        return ResponseEntity.status(200).body("Airport exist");
+
     }
     @GetMapping("searchByLocation")
-    public Airport searchAirportByLocation(@RequestParam(required = true) String location) {
-        return airportRepository.findByLocation(location);
-    }
-    @GetMapping("searchById/{id}")
-    public ResponseEntity<?> searchAirportById(@PathVariable Integer id) {
-        if (!airportRepository.existsById(id)) {
+    public  ResponseEntity<AirportResponse> searchAirportByName(@RequestParam(required = true) String name) {
+        try {
+            Airport airport = airportService.searchFlightsByName(name);
+        } catch (NullPointerException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(airportRepository.findById(id));
+        Airport airport = airportService.searchFlightsByName(name);
+        AirportResponse airportResponse = new AirportResponse(airport);
+        return ResponseEntity.ok(airportResponse);
+    }
+
+    @GetMapping("searchById/{id}")
+    public ResponseEntity<AirportResponse> searchAirportById(@PathVariable Integer id) {
+        return ResponseEntity.ok(airportService.findAirportById(id));
     }
 
     @GetMapping("/addAirports")
-    public String addAirports() {
-        airportReader.saveAirportsDataFromList();
-        return "Airports's been added";
+    public ResponseEntity<String> addAirports() {
+        boolean isSaved = airportReader.saveAirportsDataFromList();
+        if (isSaved!=true){
+            return ResponseEntity.status(500).body("Airports haven't been added");
+        }
+        return ResponseEntity.status(201).body("Airports have been added");
     }
-    @Transactional
+
     @PutMapping("/updateAirport/{id}")
-    public ResponseEntity<?> updateAirport(@PathVariable int id, @RequestBody Airport source) {
-        if (!airportRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<AirportResponse> updateAirport(@PathVariable int id, @Valid @RequestBody AirportRequest source) {
+        AirportResponse airportUpdated = airportService.executeAirportUpdate(id, source);
+        if (airportUpdated != null) {
+            return ResponseEntity.ok(airportUpdated);
         } else {
-            airportRepository.findById(id).ifPresent(airport-> {
-                airport.updateAirport(source);
-                airportRepository.save(airport);
-            });
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.notFound().build();
         }
     }
+
 }
