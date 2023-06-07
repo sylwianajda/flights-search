@@ -2,6 +2,7 @@ package com.FlightSearch.FlightSearch.controller;
 
 import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
 import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
+import com.FlightSearch.FlightSearch.controller.model.MergeFlightResponse;
 import com.FlightSearch.FlightSearch.controller.model.Trip;
 import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.service.FlightService;
@@ -77,12 +78,11 @@ public class FlightController {
     }
 
     @GetMapping("/match")
-    ResponseEntity<List<String>> getMatchingFlights(@RequestBody @Valid final Trip trip) {
+    ResponseEntity<MergeFlightResponse> getMatchingFlights(@RequestBody @Valid final Trip trip) {
         boolean validationResponse = getValidation(trip);
         if (validationResponse != true) {
             return ResponseEntity.unprocessableEntity().build();
         }
-      //return ResponseEntity.ok(flightService.searchConnections(trip));
-        return null;
+        return ResponseEntity.ok(flightService.makeMergeFlightResponseFromMapWithConnections(flightService.searchConnections(trip)));
     }
 }

@@ -7,7 +7,8 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class ExternalConnectionConfiguration {
     @Bean
-    RestTemplate restTemplate() {
+    RestTemplate externalConnectionRestTemplate() {
+
         return new RestTemplate();
     }
 }

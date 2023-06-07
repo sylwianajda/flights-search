@@ -1,5 +1,6 @@
 package com.FlightSearch.FlightSearch.service;
 
+import com.FlightSearch.FlightSearch.controller.model.MergeFlightResponse;
 import com.FlightSearch.FlightSearch.service.model.WeightFlightsPath;
 import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
 import com.FlightSearch.FlightSearch.controller.model.Trip;
@@ -22,15 +23,13 @@ import java.util.stream.Stream;
 public class FlightService {
     private ExternalApiClient externalApiService;
     private SqlRepository sqlRepository;
-    private FlightChecker flightChecker;
-    private DijkstraService dijkstraService;
 
 
-    public FlightService(ExternalApiClient externalApiService, SqlRepository sqlRepository, FlightChecker flightChecker, DijkstraService dijkstraService) {
+
+    public FlightService(ExternalApiClient externalApiService, SqlRepository sqlRepository) {
         this.externalApiService = externalApiService;
         this.sqlRepository = sqlRepository;
-        this.flightChecker = flightChecker;
-        this.dijkstraService = dijkstraService;
+
     }
     @Transactional
     public Long addFlight(CreateFlightRequest flightRequest) {
@@ -139,19 +138,20 @@ public class FlightService {
         return makeFlightsResponseFromFlights(returnMatchingFlights);
     }
 
-    public void/*List<String>*/ searchConnections(Trip trip) {
+    public Map<String, List<WeightFlightsPath>> searchConnections(Trip trip) {
         List<Flight> directFlightsToDestination = sqlRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers());
         List<Flight> directReturnFlights = sqlRepository.findReturnMatch(trip.getArrivalTo(), trip.getDepartureTo(), trip.getReturnDepartureDate(), trip.getNumberOfPassengers());
 
         List<List<Flight>> flightsWithStopsToDestination = findMatchingFlightsWithStops(trip);
-        List<List<Flight>> ReturnFlightsWithStopsToDestination = findReturnMatchingFlightsWithStops(trip);
-
-        List<Flight> flightsToGraph = flightsWithStopsToDestination.stream().flatMap(List::stream).collect(Collectors.toList());
-        flightsToGraph.addAll(directFlightsToDestination);
+        List<List<Flight>> returnFlightsWithStopsToDestination = findReturnMatchingFlightsWithStops(trip);
 
 
         List<WeightFlightsPath> costOfFlightsWithStops = new ArrayList<>();
         List<WeightFlightsPath> costOfDirectFlights = new ArrayList<>();
+
+        List<WeightFlightsPath> costOfReturnFlightsWithStops = new ArrayList<>();
+        List<WeightFlightsPath> costOfDirectReturnFlights = new ArrayList<>();
+
 
         flightsWithStopsToDestination.stream().forEach(
                 flights -> {
@@ -187,17 +187,49 @@ public class FlightService {
                 }
         );
 
-        List<WeightFlightsPath> costOfFlights = Stream.concat(costOfDirectFlights.stream(), costOfFlightsWithStops.stream()).toList();
+        returnFlightsWithStopsToDestination.stream().forEach(
+                flights -> {
+                    for (int i = 0; i < flights.size(); i++) {
+                        List<Long> joinedIds = new ArrayList<>();
+                        List<BigDecimal> joinedPrices = new ArrayList<>();
+                        flights.stream().forEach(flight -> {
+                            joinedPrices.add(flight.getPrice());
+                            joinedIds.add(flight.getId());
+                        });
 
+                        if (flights.size() - 1 == i) {
+                            int sumedPrices = 0;
+                            for (BigDecimal price : joinedPrices) {
+                                sumedPrices += price.intValue();
+                            }
+                            BigDecimal sumedPricesInBD = new BigDecimal(sumedPrices);
+                            WeightFlightsPath weightFlightsPath = new WeightFlightsPath(joinedIds, sumedPricesInBD);
+                            costOfReturnFlightsWithStops.add(weightFlightsPath);
+                        }
+                    }
+                }
+        );
 
-        List<String> shortestPath = flightChecker.findShortestPath(trip.getDepartureTo(), trip.getArrivalTo(), flightsToGraph);
+        directReturnFlights.stream().forEach(
+                flight -> {
+                    List<Long> ids = new ArrayList<>();
+                    ids.add(flight.getId());
+                    BigDecimal price= flight.getPrice();
+                    WeightFlightsPath weightFlightsPath = new WeightFlightsPath(ids, price);
+                    costOfDirectReturnFlights.add(weightFlightsPath);
+                }
+        );
 
-        List<String> shortestPathUla = flightChecker.findShortestPathUla(trip.getDepartureTo(), trip.getArrivalTo(), costOfFlights);
-        sortingListOfCostOfFlights(costOfFlights);
+        List<WeightFlightsPath> costOfFlightsToDestination = Stream.concat(costOfDirectFlights.stream(), costOfFlightsWithStops.stream()).toList();
+        List<WeightFlightsPath> costOfReturnFlights = Stream.concat(costOfDirectReturnFlights.stream(), costOfReturnFlightsWithStops.stream()).toList();
 
+        List<WeightFlightsPath> sortedListOfCostOfFlightsToDestination = sortingListOfCostOfFlights(costOfFlightsToDestination);
+        List<WeightFlightsPath> sortedListOfCostOfReturnFlights = sortingListOfCostOfFlights(costOfReturnFlights);
 
-        //useDijkstra(trip.getDepartureTo(), trip.getArrivalTo(), costOfFlights);
-        //return shortestPathUla;
+        Map<String,List<WeightFlightsPath>> map =new HashMap();
+        map.put("flightPathList",sortedListOfCostOfFlightsToDestination);
+        map.put("returnFlightPathList",sortedListOfCostOfReturnFlights);
+        return map;
     }
 
     private static List<WeightFlightsPath> sortingListOfCostOfFlights(List<WeightFlightsPath> costOfFlights) {
@@ -264,6 +296,33 @@ public class FlightService {
         }
 
         return returnMatchingFlights;
+    }
+
+    public MergeFlightResponse makeMergeFlightResponseFromMapWithConnections(Map<String, List<WeightFlightsPath>> connections) {
+        List<List<FlightResponse>> flights = new ArrayList<>();
+        List<List<FlightResponse>> returnFlights = new ArrayList<>();
+
+        connections.get("flightPathList").stream().forEach
+                (weightFlightPaths -> {
+                    List<FlightResponse> connection = new ArrayList<>();
+                    for (int i = 0; i < weightFlightPaths.getIds().size(); i++) {
+                        FlightResponse flightResponse = new FlightResponse(sqlRepository.findFlightById(weightFlightPaths.getIds().get(i)).get());
+                        connection.add(flightResponse);
+                    }
+                    flights.add(connection);
+                });
+        connections.get("returnFlightPathList").stream().forEach
+                (weightFlightPaths -> {
+                    List<FlightResponse> gada = new ArrayList<>();
+                    for (int i = 0; i < weightFlightPaths.getIds().size(); i++) {
+                        FlightResponse flightResponse = new FlightResponse(sqlRepository.findFlightById(weightFlightPaths.getIds().get(i)).get());
+                        gada.add(flightResponse);
+                    }
+                    returnFlights.add(gada);
+                });
+        MergeFlightResponse mergeFlightResponse = new MergeFlightResponse(flights, returnFlights);
+
+        return mergeFlightResponse;
     }
 
 

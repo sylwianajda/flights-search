@@ -1,6 +1,6 @@
 package com.FlightSearch.FlightSearch.service;
 
-import com.FlightSearch.FlightSearch.model.WeightFlightsPath;
+import com.FlightSearch.FlightSearch.service.model.WeightFlightsPath;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

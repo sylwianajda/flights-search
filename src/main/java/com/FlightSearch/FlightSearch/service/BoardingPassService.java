@@ -21,7 +21,7 @@ public class BoardingPassService {
         this.sqlRepository = sqlRepository;
     }
     @Transactional
-    public List<BoardingPassResponse> generateBoardingPassesForAllPassengers(BoardingPassBookingRequest boardingPassBookingRequest, Long flightId) {
+    public List<BoardingPassResponse> generateBoardingPassesForAllPassengers(BoardingPassBookingRequest boardingPassBookingRequest, Long flightId) throws NonAvailableSeatsException {
         Flight flight = sqlRepository.findFlightById(flightId).get();
         List<BoardingPass> listOfBoardingPassesFromRequestForAllPassengers = getListOfBoardingPassesFromBoardingPassBookingRequest(boardingPassBookingRequest, flight);
         List<BoardingPassResponse> boardingPassesResponse = new ArrayList<>();
@@ -35,13 +35,8 @@ public class BoardingPassService {
                 boardingPassesResponse.add(boardingPassResponse);
             });
             return boardingPassesResponse;
-        } else {
-            try {
-                throw new NonAvailableSeatsException();
-            } catch (NonAvailableSeatsException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        } else
+            throw new NonAvailableSeatsException();
     }
     public BoardingPassResponse makeBoardingPassResponseFromBoardingPass(Long boardingPassId){
         return new BoardingPassResponse(sqlRepository.findBoardingPassById(boardingPassId).get());

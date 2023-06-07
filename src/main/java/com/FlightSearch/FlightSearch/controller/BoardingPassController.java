@@ -1,6 +1,7 @@
 package com.FlightSearch.FlightSearch.controller;
 
 import com.FlightSearch.FlightSearch.controller.exceptions.IllegalExceptionProcessing;
+import com.FlightSearch.FlightSearch.controller.exceptions.NonAvailableSeatsException;
 import com.FlightSearch.FlightSearch.controller.model.BoardingPassBookingRequest;
 import com.FlightSearch.FlightSearch.controller.model.BoardingPassResponse;
 import com.FlightSearch.FlightSearch.service.BoardingPassService;
@@ -20,7 +21,7 @@ public class BoardingPassController {
     }
 
     @PostMapping("/booking/flight/{flightId}")
-    ResponseEntity<List<BoardingPassResponse>> postBookingBoardingPass(@PathVariable Long flightId, @RequestBody final BoardingPassBookingRequest boardingPassBookingRequest) {
+    ResponseEntity<List<BoardingPassResponse>> postBookingBoardingPass(@PathVariable Long flightId, @RequestBody final BoardingPassBookingRequest boardingPassBookingRequest) throws NonAvailableSeatsException {
         List<BoardingPassResponse> boardingPassList = boardingPassService.generateBoardingPassesForAllPassengers(boardingPassBookingRequest, flightId);
         return ResponseEntity.ok(boardingPassList);
     }
