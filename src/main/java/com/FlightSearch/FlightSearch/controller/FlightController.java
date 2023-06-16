@@ -3,12 +3,14 @@ package com.FlightSearch.FlightSearch.controller;
 import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
 import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.controller.model.MergeFlightResponse;
-import com.FlightSearch.FlightSearch.controller.model.Trip;
+import com.FlightSearch.FlightSearch.service.model.Trip;
 import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.service.FlightService;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -30,9 +32,16 @@ public class FlightController {
     }
 
     @GetMapping("/matchWithoutStops")
-    ResponseEntity<List<List<FlightResponse>>> getMatchingFlightsWithoutStops(@RequestBody @Valid final Trip trip) {
-        boolean validationResponse = getValidation(trip);
-        if (validationResponse != true) {
+    ResponseEntity<List<List<FlightResponse>>> getMatchingFlightsWithoutStops(@RequestParam(required = true) @NotBlank String departureTo,
+                                                                              @RequestParam(required = true) @NotBlank String arrivalTo,
+                                                                              @RequestParam(required = true) @NotBlank LocalDateTime departureDate,
+                                                                              @RequestParam(required = true) @NotBlank Boolean returnTrip,
+                                                                              @RequestParam(required = false) @NotBlank LocalDateTime returnDepartureDate,
+                                                                              @RequestParam(required = true) @NotBlank int numberOfPassengers) {
+
+        Trip trip = new Trip(departureTo, arrivalTo, departureDate, returnTrip, returnDepartureDate, numberOfPassengers);
+        boolean validationRequest = getValidation(trip);
+        if (validationRequest != true) {
             return ResponseEntity.unprocessableEntity().build();
         }
         List<List<FlightResponse>> matchingFlightsResponse = flightService.searchMatchingFlights(trip);
@@ -51,9 +60,16 @@ public class FlightController {
     }
 
     @PostMapping("/getFlighFromExternalAPI")
-    public Object getFlightFromExternalAPI(@RequestBody @Valid final Trip trip) {
-        boolean validationResponse = getValidation(trip);
-        if (validationResponse != true) {
+    public Object getFlightFromExternalAPI(@RequestParam(required = true) @NotBlank String departureTo,
+                                           @RequestParam(required = true) @NotBlank String arrivalTo,
+                                           @RequestParam(required = true) @NotBlank LocalDateTime departureDate,
+                                           @RequestParam(required = true) @NotBlank Boolean returnTrip,
+                                           @RequestParam(required = false) @NotBlank LocalDateTime returnDepartureDate,
+                                           @RequestParam(required = true) @NotBlank int numberOfPassengers) {
+
+        Trip trip = new Trip(departureTo, arrivalTo, departureDate, returnTrip, returnDepartureDate, numberOfPassengers);
+        boolean validationRequest = getValidation(trip);
+        if (validationRequest != true) {
             return ResponseEntity.unprocessableEntity().build();
         }
         ResponseEntity<String> response = flightService.getFlightFromExternalApi(trip);
@@ -61,10 +77,17 @@ public class FlightController {
     }
 
 
-    @GetMapping("/matchWithStops") // TODO:xxx
-    ResponseEntity<List<List<FlightResponse>>> getMatchingFlightsWithStops(@RequestBody @Valid final Trip trip) {
-        boolean validationResponse = getValidation(trip);
-        if (validationResponse != true) {
+    @GetMapping("/matchWithStops")
+    ResponseEntity<List<List<FlightResponse>>> getMatchingFlightsWithStops(@RequestParam(required = true) @NotBlank String departureTo,
+                                                                           @RequestParam(required = true) @NotBlank String arrivalTo,
+                                                                           @RequestParam(required = true) @NotBlank LocalDateTime departureDate,
+                                                                           @RequestParam(required = true) @NotBlank Boolean returnTrip,
+                                                                           @RequestParam(required = false) @NotBlank LocalDateTime returnDepartureDate,
+                                                                           @RequestParam(required = true) @NotBlank int numberOfPassengers) {
+
+        Trip trip = new Trip(departureTo, arrivalTo, departureDate, returnTrip, returnDepartureDate, numberOfPassengers);
+        boolean validationRequest = getValidation(trip);
+        if (validationRequest != true) {
             return ResponseEntity.unprocessableEntity().build();
         }
         List<List<FlightResponse>> matchingFlightsResponse = flightService.searchMatchingFlightsWithStops(trip);
@@ -78,7 +101,14 @@ public class FlightController {
     }
 
     @GetMapping("/match")
-    ResponseEntity<MergeFlightResponse> getMatchingFlights(@RequestBody @Valid final Trip trip) {
+    ResponseEntity<MergeFlightResponse> getMatchingFlights(@RequestParam(required = true) @NotBlank String departureTo,
+                                                           @RequestParam(required = true) @NotBlank String arrivalTo,
+                                                           @RequestParam(required = true) @NotBlank LocalDateTime departureDate,
+                                                           @RequestParam(required = true) @NotBlank Boolean returnTrip,
+                                                           @RequestParam(required = false) @NotBlank LocalDateTime returnDepartureDate,
+                                                           @RequestParam(required = true) @NotBlank int numberOfPassengers) {
+
+        Trip trip = new Trip(departureTo, arrivalTo, departureDate, returnTrip, returnDepartureDate, numberOfPassengers);
         boolean validationResponse = getValidation(trip);
         if (validationResponse != true) {
             return ResponseEntity.unprocessableEntity().build();

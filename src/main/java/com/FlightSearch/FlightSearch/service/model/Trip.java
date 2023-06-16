@@ -1,4 +1,4 @@
-package com.FlightSearch.FlightSearch.controller.model;
+package com.FlightSearch.FlightSearch.service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

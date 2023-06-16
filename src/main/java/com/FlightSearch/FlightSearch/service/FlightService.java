@@ -3,7 +3,7 @@ package com.FlightSearch.FlightSearch.service;
 import com.FlightSearch.FlightSearch.controller.model.MergeFlightResponse;
 import com.FlightSearch.FlightSearch.service.model.WeightFlightsPath;
 import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
-import com.FlightSearch.FlightSearch.controller.model.Trip;
+import com.FlightSearch.FlightSearch.service.model.Trip;
 import com.FlightSearch.FlightSearch.externalService.ExternalApiClient;
 import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;

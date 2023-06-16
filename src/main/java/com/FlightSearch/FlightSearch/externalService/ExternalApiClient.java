@@ -1,6 +1,6 @@
 package com.FlightSearch.FlightSearch.externalService;
 
-import com.FlightSearch.FlightSearch.controller.model.Trip;
+import com.FlightSearch.FlightSearch.service.model.Trip;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

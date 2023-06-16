@@ -2,7 +2,7 @@ package com.FlightSearch.FlightSearch.service;
 
 import com.FlightSearch.FlightSearch.controller.model.BoardingPassBookingRequest;
 import com.FlightSearch.FlightSearch.controller.model.BoardingPassResponse;
-import com.FlightSearch.FlightSearch.controller.model.Passenger;
+import com.FlightSearch.FlightSearch.service.model.Passenger;
 import com.FlightSearch.FlightSearch.service.model.Airport;
 import com.FlightSearch.FlightSearch.service.model.BoardingPass;
 import com.FlightSearch.FlightSearch.service.model.Flight;

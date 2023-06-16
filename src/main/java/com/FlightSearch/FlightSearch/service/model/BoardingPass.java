@@ -1,6 +1,5 @@
 package com.FlightSearch.FlightSearch.service.model;
 
-import com.FlightSearch.FlightSearch.controller.model.Passenger;
 import com.FlightSearch.FlightSearch.repository.entities.BoardingPassData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

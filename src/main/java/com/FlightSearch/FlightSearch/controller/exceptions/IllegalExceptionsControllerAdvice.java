@@ -21,9 +21,5 @@ public class IllegalExceptionsControllerAdvice {
         String message = "No seats available. Please try booking a different flight";
         return new ResponseEntity<String>(message, HttpStatus.CONFLICT);
     }
-//    @ExceptionHandler({IllegalArgumentException.class})
-//    ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e){
-//        String message = "No seats available. Please try booking a different flight";
-//        return new ResponseEntity<String>(message, HttpStatus.CONFLICT);
-//    }
+
 }

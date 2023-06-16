@@ -2,7 +2,7 @@ package com.FlightSearch.FlightSearch.service;
 
 import com.FlightSearch.FlightSearch.controller.model.CreateFlightRequest;
 import com.FlightSearch.FlightSearch.controller.model.FlightResponse;
-import com.FlightSearch.FlightSearch.controller.model.Trip;
+import com.FlightSearch.FlightSearch.service.model.Trip;
 import com.FlightSearch.FlightSearch.service.model.Airport;
 import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
@@ -103,9 +103,6 @@ public class FlightServiceTest {
         //then
         assertThat(flightIdAddedFlight).isNotNull();
         assertEquals(3L, flightIdAddedFlight);
-        //assertEquals("WROCLAW", flightIdAddedFlig);
-        //assertEquals(60, flightResponse.getNumberOfSeatsAvailable());
-        //assertNotEquals(101,flightResponse.getId());
     }
 //public Long addFlight(CreateFlightRequest flightRequest) {
 //    Flight flight = makeFlightFromCreateFlightRequest(flightRequest);
@@ -118,17 +115,17 @@ public class FlightServiceTest {
         //given
         Trip trip = new Trip("WROCLAW", "LIVERPOOL", LocalDateTime.parse("2023-12-01T12:00:00"),
                 false, 2);
-        List<Flight> mockMatchingdFlights = new ArrayList<>();
-        mockMatchingdFlights.add(new Flight(10L, "234", "WROCLAW", "LIVERPOOL",
+        List<Flight> mockMatchingFlights = new ArrayList<>();
+        mockMatchingFlights.add(new Flight(10L, "234", "WROCLAW", "LIVERPOOL",
                 LocalDateTime.parse("2023-12-01T13:45:00"), LocalDateTime.parse("2023-12-01T14:45:00"),
                 BigDecimal.valueOf(30), 60, new Airport(101, "WROCLAW", "WROCLAW",
                 "WRO", "POLAND", (double) 14L, (double) 15L)));
-        mockMatchingdFlights.add(new Flight(11L, "236", "WROCLAW", "LIVERPOOL",
+        mockMatchingFlights.add(new Flight(11L, "236", "WROCLAW", "LIVERPOOL",
                 LocalDateTime.parse("2023-12-02T13:45:00"), LocalDateTime.parse("2023-12-02T14:45:00"),
                 BigDecimal.valueOf(30), 34, new Airport(101, "WROCLAW", "WROCLAW",
                 "WRO", "POLAND", (double) 14L, (double) 15L)));
         when(sqlRepository.findMatch(trip.getDepartureTo(), trip.getArrivalTo(), trip.getDepartureDate(), trip.getNumberOfPassengers()))
-                .thenReturn(mockMatchingdFlights);
+                .thenReturn(mockMatchingFlights);
 
         List<Flight> mockMatchingReturnFlights = new ArrayList<>();
 //        mockMatchedReturnFlights.add(new Flight(10L, "114", "LIVERPOOL", "WROCLAW",
@@ -151,8 +148,8 @@ public class FlightServiceTest {
             listsOfFlightsResponse.get(1);
         });
         assertEquals(1, listsOfFlightsResponse.size());
-        assertEquals(mockMatchingdFlights.size(), listsOfFlightsResponse.get(0).size());
-        assertEquals(mockMatchingdFlights.get(0).getId(), listsOfFlightsResponse.get(0).get(0).getId());
+        assertEquals(mockMatchingFlights.size(), listsOfFlightsResponse.get(0).size());
+        assertEquals(mockMatchingFlights.get(0).getId(), listsOfFlightsResponse.get(0).get(0).getId());
 
     }
 

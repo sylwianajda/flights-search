@@ -3,7 +3,7 @@ package com.FlightSearch.FlightSearch.service;
 import com.FlightSearch.FlightSearch.controller.exceptions.NonAvailableSeatsException;
 import com.FlightSearch.FlightSearch.controller.model.BoardingPassBookingRequest;
 import com.FlightSearch.FlightSearch.controller.model.BoardingPassResponse;
-import com.FlightSearch.FlightSearch.controller.model.Passenger;
+import com.FlightSearch.FlightSearch.service.model.Passenger;
 import com.FlightSearch.FlightSearch.service.model.BoardingPass;
 import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.repository.sqlRepository.SqlRepository;
