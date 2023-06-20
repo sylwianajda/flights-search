@@ -6,17 +6,21 @@ import com.FlightSearch.FlightSearch.controller.model.MergeFlightResponse;
 import com.FlightSearch.FlightSearch.service.model.Trip;
 import com.FlightSearch.FlightSearch.service.model.Flight;
 import com.FlightSearch.FlightSearch.service.FlightService;
+import io.swagger.v3.oas.annotations.info.Info;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 
 
 
 @RestController
 @RequestMapping("/flight")
+@OpenAPIDefinition(info=@Info(title = "Flights search"))
 public class FlightController {
     private final FlightService flightService;
 

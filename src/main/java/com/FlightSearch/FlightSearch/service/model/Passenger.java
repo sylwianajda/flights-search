@@ -1,10 +1,11 @@
 package com.FlightSearch.FlightSearch.service.model;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.constraints.NotEmpty;
+
 @Getter
 @Setter
 public class Passenger {

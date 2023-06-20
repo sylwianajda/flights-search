@@ -6,11 +6,11 @@ import com.FlightSearch.FlightSearch.controller.model.AirportResponse;
 import com.FlightSearch.FlightSearch.service.AirportReader;
 import com.FlightSearch.FlightSearch.service.AirportService;
 import com.FlightSearch.FlightSearch.service.model.Airport;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 
 @RestController
 @IllegalExceptionProcessing

@@ -1,11 +1,11 @@
 package com.FlightSearch.FlightSearch.controller.model;
 
 import com.FlightSearch.FlightSearch.service.model.Passenger;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @AllArgsConstructor

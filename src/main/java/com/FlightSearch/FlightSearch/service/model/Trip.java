@@ -1,14 +1,14 @@
 package com.FlightSearch.FlightSearch.service.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 @Getter
 @Setter
-
 public class Trip {
     @NotBlank(message = "Trip's departure must not be empty")
     private String departureTo;

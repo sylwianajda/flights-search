@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+//import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -21,19 +21,19 @@ public class FlightData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
-    @NotBlank
+    //@NotBlank
     private String flightNumber;
-    @NotBlank
+    //@NotBlank
     private String departureTo;
-    @NotBlank
+    //@NotBlank
     private String arrivalTo;
-    @NotBlank
+    //@NotBlank
     private LocalDateTime departureDate;
-    @NotBlank
+    //@NotBlank
     private LocalDateTime arrivalDate;
-    @NotBlank
+    //@NotBlank
     private BigDecimal price;
-    @NotBlank
+    //@NotBlank
     private int numberOfSeatsAvailable;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
