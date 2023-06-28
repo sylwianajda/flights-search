@@ -56,7 +56,7 @@ public class Airport {
                 "}";}
 
     public Airport(AirportRequest airportRequest) {
-        this.id = airportRequest.getId();
+        //this.id = airportRequest.getId();
         this.name = airportRequest.getName();
         this.location = airportRequest.getLocation();
         this.iataCode = airportRequest.getIataCode();
@@ -77,9 +77,9 @@ public class Airport {
 
 
 
-        public static Airport from(AirportRequest airportRequest){
+        public static Airport from(AirportRequest airportRequest, Integer id){
         return new Airport(
-                airportRequest.getId(),
+                id,
                 airportRequest.getName(),
                 airportRequest.getLocation(),
                 airportRequest.getIataCode(),

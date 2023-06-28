@@ -37,7 +37,8 @@ public class AirportService {
     }
     @Transactional
     public AirportResponse executeAirportUpdate(int id, AirportRequest airportRequest) {
-            Airport source = new Airport(airportRequest);
+            //Airport source = new Airport(airportRequest);
+        Airport source = Airport.from(airportRequest,id);
          sqlRepository.findAirportById(id).ifPresent(airport -> {
              airport.updateAirport(source);
 
